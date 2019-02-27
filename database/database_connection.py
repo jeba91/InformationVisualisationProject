@@ -1,10 +1,11 @@
 import mysql.connector
+from mysql.connector import errorcode
 
 config = {
-    'host': '',
-    'user': '',
-    'password': '',
-    'database': ''
+    'host': 'rdbms.strato.de',
+    'user': 'U3689026',
+    'password': 'Fakepass',
+    'database': 'DB3689026'
 }
 
 try:
@@ -15,7 +16,7 @@ except mysql.connector.Error as e:
 cursor = db.cursor()
 
 try:
-    cursor.execute("")
+    cursor.execute("SHOW DATABASES")
 except mysql.connector.Error as e:
     print(e)
 
