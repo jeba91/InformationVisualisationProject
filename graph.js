@@ -12,7 +12,7 @@ let zoom = d3.zoom()
 .scaleExtent([1, 8])
 .on('zoom', zoomed);
 
-let svg = d3.select('body')
+let svg = d3.select('#worldmap')
 .append('svg')
 .attr('width', width)
 .attr('height', height)
