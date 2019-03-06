@@ -2,3 +2,4 @@ data/edgeFeaturesFlickr/*.txt
 data/flickrXml/*.xml
 data/nodeFeaturesFlickr/*.txt
 data/flickrEdges.txt
+database.php
