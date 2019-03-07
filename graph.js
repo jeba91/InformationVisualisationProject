@@ -41,6 +41,7 @@ d3.json('high.geo.json').then(function(geojson){
 function zoomed(){
     map.attr('transform', d3.event.transform);
     dots.attr('transform', d3.event.transform);
+    dots.selectAll('circle').attr('r', -1/20*d3.event.transform.k + 1 + (1/20));
 }
 
 function dot_click(){
@@ -101,7 +102,7 @@ function load_dots(){
                 .attr('cy', function (d){
                     return projection([parseFloat(d['longitude']), parseFloat(d['latitude'])])[1];
                 })
-                .attr('r', '1px')
+                .attr('r', 1)
                 .attr('fill', 'red')
                 .attr('data-url', function(d){
                     return d['url'];
