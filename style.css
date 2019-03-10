@@ -8,3 +8,15 @@ body {
   fill: #ddd;
   stroke: #aaa;
 }
+
+.node {
+  fill: none;
+  stroke: #ccc;
+  shape-rendering: crispEdges;
+}
+
+.cell {
+  fill: none;
+  stroke: #00ff00;
+  shape-rendering: crispEdges;
+}
