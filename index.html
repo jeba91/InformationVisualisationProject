@@ -1,22 +1,27 @@
-<html>
+<!doctype html>
+<html lang="en">
     <head>
         <title>Six degrees of freedom</title>
+        <meta charset="utf-8">
         <link rel="stylesheet" type="text/css" href="./style.css">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
         <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.9.1/d3.min.js"></script>
-        <!-- <script src="https://d3js.org/d3.v3.js"></script> -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        <script src="./map.js"></script>
-        <script src="./jsload.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     </head>
     <body>
-        <p id="worldmap">
-
-        </p>
-
-        <p id="chart">
-
-        </p>
+        <div class="containter-fluid">
+            <div class="box1" id="worldmap"></div>
+        </div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="box3 col-4" id="photo1"></div>
+                <div class="box2 col-4" id="chart"></div>
+                <div class="box3 col-4" id="photo2"></div>
+            </div>
+        </div>
     </body>
-    <script src="./graph.js"></script>
-    <script src="./tryout.js"></script>
+    <script src="./map.js"></script>
 </html>

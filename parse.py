@@ -14,8 +14,8 @@ def setup_connection(config):
 
 def db_entry(cursor, *args):
     try:
-        cursor.execute("INSERT INTO photos (photo_id, title, description, poster, latitude, longitude, taken, posted, url, groups, tags, labels, server, farm , secret) \
-        VALUES (%s,'%s','%s', '%s', %s, %s,'%s','%s' ,'%s', '%s', '%s', '%s', '%s', '%s', '%s')" % args)
+        cursor.execute("INSERT INTO photos (photo_id, title, description, poster, latitude, longitude, taken, posted, url, groups, tags, labels, server, farm , secret, views) \
+        VALUES (%s,'%s','%s', '%s', %s, %s,'%s','%s' ,'%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')" % args)
     except mysql.connector.Error as e:
         print(e)
 
@@ -81,8 +81,9 @@ def main(file_path, cursor):
         server = photo.get('server')
         farm = photo.get('farm')
         secret = photo.get('secret')
+        views = photo.get('views')
 
-        db_entry(cursor, photo_id, title, description, poster, latitude, longitude, date_taken, date_posted, url, group_list, tag_list, label_list, server, farm, secret)
+        db_entry(cursor, photo_id, title, description, poster, latitude, longitude, date_taken, date_posted, url, group_list, tag_list, label_list, server, farm, secret, views)
 
 if __name__ == "__main__":
     config = {

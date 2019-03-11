@@ -9,14 +9,28 @@ body {
   stroke: #aaa;
 }
 
-.node {
-  fill: none;
-  stroke: #ccc;
-  shape-rendering: crispEdges;
+.box1{
+    width: 100%;
+	border-width:2px;
+	border-style:solid;
+	border-color:black;
 }
 
-.cell {
-  fill: none;
-  stroke: #00ff00;
-  shape-rendering: crispEdges;
+.box2{
+	border-width:2px;
+	border-style:solid;
+	border-color:black;
+}
+
+.box3{
+	border-width:2px;
+	border-style:solid;
+}
+
+.box3#photo1{
+	border-color:blue;
+}
+
+.box3#photo2{
+	border-color:green;
 }
