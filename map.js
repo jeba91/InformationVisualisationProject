@@ -339,7 +339,6 @@ function search(quadtree, x0, y0, x3, y3){
 }
 
 function load_tree(x_offset, y_offset, scale){
-    console.log('load tree bitch')
     let tree = d3.quadtree();
 
     tree.addAll(coordinates);
