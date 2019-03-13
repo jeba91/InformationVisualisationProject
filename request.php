@@ -17,10 +17,11 @@
         $longitude = $row['longitude'];
         $latitude = $row['latitude'];
         $views = $row['views'];
+        $labels = $row['labels'];
 
         $url = 'http://farm' . $farm . '.staticflickr.com/' . $server . '/' . $photo_id . '_' . $secret . '.jpg';
 
-        $return_arr[] = array('id' => $id,'title' => $title, 'longitude' => $longitude, 'latitude' => $latitude, 'url' => $url, 'views' => $views);
+        $return_arr[] = array('id' => $id,'title' => $title, 'longitude' => $longitude, 'latitude' => $latitude, 'url' => $url, 'views' => $views, 'labels' => $labels);
     }
     header('Content-Type: application/json');
     echo json_encode($return_arr);
