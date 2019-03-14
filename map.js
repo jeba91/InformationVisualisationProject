@@ -4,9 +4,12 @@ let height = 1024;
 
 let selectfirst = true;
 let selectsecond = false;
-let selectednew = false;
+
 let selecturl1 = "";
 let selecturl2 = "";
+
+let inCenterpoint  = false;
+let outCenterpoint = true;
 
 let translation_x = 0;
 let translation_y = 0;
@@ -119,20 +122,20 @@ function endZoom(){
 
 // Initialise world map and call zoom on each event
 let svg = d3.select('#worldmap')
-.append('svg')
-.attr('width', width)
-.attr('height', height)
-.call(zoom);
+    .append('svg')
+    .attr('width', width)
+    .attr('height', height)
+    .call(zoom);
 
 // Initialise g's, order is important: it determines the z-index
 let map = svg.append('g');
-let centers = svg.append('g');
-let centerTexts = svg.append('g');
 let dots = svg.append('g');
+let centerTexts = svg.append('g');
+let centers = svg.append('g');
 let image1 = d3.select('#photo1')
-.append('one')
+    .append('one')
 let image2 = d3.select('#photo2')
-.append('two');
+    .append('two');
 
 d3.select("#photo1").on("click", reselect);
 d3.select("#photo2").on("click", reselect);
@@ -171,71 +174,85 @@ let coordinates = [];
 let previous_k = 1.0;
 
 // Method for mouseover
-function mouseoverDot(d){
+function mouseoverCenter(d){
     let views = d[2].map(function(d){return d[3]});
     let max_views_index = indexOfMax(views);
     let url_most_views = d[2][max_views_index][2];
     let circle_most_views = d[2][max_views_index][4];
 
+    if(!inCenterpoint & outCenterpoint){
+        if(d3.select(circle_most_views).attr('checked') == 'false'){
+            d3.select(circle_most_views)
+                .attr("r", 30)
+                .attr("fill", "red")
+        }
+
+        if(selectfirst){
+            image1.transition().duration(200).style("opacity", .9);
+            image1.html('<img src="' + url_most_views + '">');
+        }
+
+        else if(selectsecond){
+            image2.transition().duration(200).style("opacity", .9);
+            image2.html('<img src="' + url_most_views + '">');
+        }
+    }else if(inCenterpoint & !outCenterpoint){
+        if(selectfirst & !selectsecond & d3.select(circle_most_views).attr('checked') == 'false'){
+            d3.selectAll('circle[fill=blue]')
+                .attr("fill", "none")
+                .attr('checked','false');
+            d3.select(circle_most_views)
+                .attr("fill", "blue")
+                .attr('checked','true')
+                .attr("r", 30);
+            image1.style("opacity", 1.0);
+            selectfirst = false;
+            selectsecond = true;
+            selecturl1 = url_most_views;
+            image1.html('<img src="' + selecturl1 + '">');
+        }else if(!selectfirst & selectsecond & d3.select(circle_most_views).attr('checked') == 'false'){
+            d3.selectAll('circle[fill=green]')
+                .attr("fill", "none")
+                .attr('checked','false');
+            d3.select(circle_most_views)
+                .attr("fill", "green")
+                .attr('checked','true')
+                .attr("r", 30);
+            image2.style("opacity", 1.0);
+            selectfirst = true;
+            selectsecond = false;
+            selecturl2 = url_most_views;
+            image2.html('<img src="' + url_most_views + '">');
+        }
+    }
+
+    if(!inCenterpoint & outCenterpoint){
+        inCenterpoint = true;
+        outCenterpoint =  false;
+    }
+}
+
+
+function mouseoutCenter(d){
+    let views = d[2].map(function(d){return d[3]});
+    let max_views_index = indexOfMax(views);
+    let url_most_views = d[2][max_views_index][2];
+    let circle_most_views = d[2][max_views_index][4];
+
+    inCenterpoint = false;
+    outCenterpoint =  true;
+
     if(d3.select(circle_most_views).attr('checked') == 'false'){
-        d3.select(circle_most_views).attr("r", 30).attr("fill", "orange")
+        d3.select(circle_most_views).attr("fill", "none")
     }
 
     if(selectfirst){
         image1.transition().duration(200).style("opacity", .9);
-        image1.html('<img src="' + url_most_views + '">');
-    }
-
-    else if(selectsecond){
-        image2.transition().duration(200).style("opacity", .9);
-        image2.html('<img src="' + url_most_views + '">');
-    }
-}
-
-function clickDot(d){
-    if(selectfirst & !selectsecond & d3.select(this).attr('checked') == 'false'){
-        d3.selectAll('circle[fill=blue]')
-        .attr("fill", "red")
-        .attr('checked','false');
-
-        d3.select(this)
-        .attr("fill", "blue")
-        .attr('checked','true')
-
-        image1.style("opacity", 1.0);
-        selectfirst = false;
-        selectsecond = true;
-        selecturl1 = this.dataset.url;
-        image1.html('<img src="' + this.dataset.url + '">');
-    }
-
-    else if(!selectfirst & selectsecond & d3.select(this).attr('checked') == 'false'){
-        d3.selectAll('circle[fill=green]')
-        .attr("fill", "red")
-        .attr('checked','false');
-        d3.select(this)
-        .attr("fill", "green")
-        .attr('checked','true');
-        image2.style("opacity", 1.0);
-        selectfirst = true;
-        selectsecond = false;
-        selecturl2 = this.dataset.url;
-        image2.html('<img src="' + this.dataset.url + '">');
-    }
-}
-
-function mouseoutDot(d){
-    if (d3.select(this).attr('checked') == 'false'){
-        d3.select(this).attr("r", 30).attr("fill", "orange")
-    }
-
-    if(selectfirst){
-        image1.transition().duration(200).style("opacity", .9);
-        image1.html('<img src="' + this.dataset.url + '">');
+        image1.html('<img src="' + selecturl1 + '">');
     }
     else if(selectsecond){
         image2.transition().duration(200).style("opacity", .9);
-        image2.html('<img src="' + this.dataset.url + '">');
+        image2.html('<img src="' + selecturl2 + '">');
     }
 }
 
@@ -260,10 +277,10 @@ function initialise_grid(granularity){
 // Load json for map. Upon completion load dots
 d3.json('high.geo.json').then(function(geojson){
     map.selectAll('path')
-    .data(geojson.features)
-    .enter()
-    .append('path')
-    .attr('d', path)
+        .data(geojson.features)
+        .enter()
+        .append('path')
+        .attr('d', path)
     load_dots();
 });
 
@@ -299,8 +316,6 @@ function load_dots(){
                 .attr('data-views', function(d){
                     return parseInt(d['views']);
                 })
-                .on("click", clickDot)
-                .on("mouseout", mouseoutDot);
 
                 dots.selectAll('circle').each(function(d){
 
@@ -383,9 +398,8 @@ function load_tree(x_offset, y_offset, scale){
    .attr("opacity", 0.75)
    .attr("r", function(d, i) {return pointSizeScale((d[2].length/scale)*4);})
    .attr('checked', 'false')
-   .on("mouseover", function(d){mouseoverDot(d);})
-   // .on("click", function(d){clickDot(d);})
-   // .on("mouseout", function(d){mouseoutDot(d)});
+   .on("mouseover", function(d){mouseoverCenter(d)})
+   .on("mouseout", function(d){mouseoutCenter(d)});
 
    centerTexts.selectAll(".centerText")
    .data(clusterPoints)
