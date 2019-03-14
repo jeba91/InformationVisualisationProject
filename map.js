@@ -8,6 +8,59 @@ let selectednew = false;
 let selecturl1 = "";
 let selecturl2 = "";
 
+let translation_x = 0;
+let translation_y = 0;
+let scale_overall = 1;
+
+// Event listener for checkboxes
+d3.selectAll(".categoryfilter").on("change", filtercategories);
+
+function intersect(a, b) {
+    var t;
+    if (b.length > a.length) t = b, b = a, a = t;
+    return a.filter(function (e) {
+        return b.indexOf(e) > -1;
+    });
+}
+
+function filtercategories(){
+    categories_present = [];
+    checkboxes = d3.selectAll(".categoryfilter").nodes()
+    checkboxes.forEach(function(d, i){
+        if(d.checked){
+            categories_present.push(i);
+        }
+    });
+
+    alt_coord = [];
+
+    dots.selectAll('circle').each(function(d){
+        if(categories_present.length == 14){
+            this.dataset.appear_in_filter = true;
+        }
+        else if(intersect(JSON.parse(this.dataset.labels), categories_present).length>0){
+            this.dataset.appear_in_filter = true;
+        }
+        else{
+            this.dataset.appear_in_filter = false;
+        }
+
+        xn = this.cx.baseVal.value*scale_overall + translation_x;
+        yn = this.cy.baseVal.value*scale_overall + translation_y;
+
+        if(xn > 0 && xn < width && yn > 0 && yn <height){
+            if(this.dataset.appear_in_filter=='true'){
+                alt_coord.push([xn, yn, this.dataset.url, parseInt(this.dataset.views), this]);
+            }
+        }
+    });
+
+    coordinates = alt_coord;
+
+
+    load_tree(translation_x, translation_y, scale_overall);
+}
+
 // Type of projection
 let projection = d3.geoMercator()
 .translate([width / 2, height / 2])
@@ -29,6 +82,10 @@ function zoomed(){
     dots.attr('transform', d3.event.transform);
     centers.attr('transform', d3.event.transform);
     centerTexts.attr('transform', d3.event.transform);
+
+    translation_x = d3.event.transform.x;
+    translation_y = d3.event.transform.y;
+    scale_overall = d3.event.transform.k;
 }
 
 // After zoomed is done this funtion is called
@@ -45,11 +102,18 @@ function endZoom(){
         yn = this.cy.baseVal.value*k + y;
 
         if(xn > 0 && xn < width && yn > 0 && yn <height){
-            alt_coord.push([xn, yn, this.dataset.url, parseInt(this.dataset.views), this]);
+            if(this.dataset.appear_in_filter=='true'){
+                alt_coord.push([xn, yn, this.dataset.url, parseInt(this.dataset.views), this]);
+            }
         }
 
     });
     coordinates = alt_coord;
+
+    translation_x = d3.event.transform.x;
+    translation_y = d3.event.transform.y;
+    scale_overall = d3.event.transform.k;
+
     load_tree(d3.event.transform.x, d3.event.transform.y, d3.event.transform.k);
 }
 
@@ -129,7 +193,6 @@ function mouseoverDot(d){
 }
 
 function clickDot(d){
-    console.log(this)
     if(selectfirst & !selectsecond & d3.select(this).attr('checked') == 'false'){
         d3.selectAll('circle[fill=blue]')
         .attr("fill", "red")
@@ -162,7 +225,6 @@ function clickDot(d){
 }
 
 function mouseoutDot(d){
-    console.log(this)
     if (d3.select(this).attr('checked') == 'false'){
         d3.select(this).attr("r", 30).attr("fill", "orange")
     }
@@ -225,6 +287,12 @@ function load_dots(){
                 .attr('r', 1)
                 .attr('fill', 'none')
                 .attr('checked', 'false')
+                .attr('data-appear_in_filter', function(d){
+                    return true;
+                })
+                .attr('data-labels', function(d){
+                    return d['labels'];
+                })
                 .attr('data-url', function(d){
                     return d['url'];
                 })
@@ -241,7 +309,9 @@ function load_dots(){
 
 
                     if(x > 0 && x < width && y > 0 && y <height){
-                        coordinates.push([x, y, this.dataset.url, parseInt(this.dataset.views), this]);
+                        if(this.dataset.appear_in_filter=='true'){
+                            coordinates.push([x, y, this.dataset.url, parseInt(this.dataset.views), this]);
+                        }
                     }
 
                 });
@@ -292,12 +362,13 @@ function load_tree(x_offset, y_offset, scale){
         }
     });
 
+    // Investigate behaviour
     let pointSizeScale = d3.scaleLinear()
        .domain([
-         d3.min(clusterPoints, function(d) {return d[2].length;}),
+         1,
          d3.max(clusterPoints, function(d) {return d[2].length;})
        ])
-       .rangeRound([1, 30]);
+       .rangeRound([1, 15]);
 
     centers.selectAll('.centerPoint').remove()
     centerTexts.selectAll('.centerText').remove()

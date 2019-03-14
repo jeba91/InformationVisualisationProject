@@ -19,7 +19,7 @@ def db_entry(cursor, *args):
     except mysql.connector.Error as e:
         print(e)
 
-def main(file_path, cursor):
+def main(file_path, cursor, labeldict):
     print('Parsing Tree')
     tree = ET.parse(file_path)
     print('done')
@@ -74,9 +74,12 @@ def main(file_path, cursor):
         labels = photo.find('labels')
         if labels is not None:
             for label in labels:
-                label = label.text.replace("'", "''")
-                label_list.append(label)
-        label_list = json.dumps(label_list)
+                label = label.text.replace("'", "''").lower()
+                try:
+                    label_list.append(labeldict[label])
+                except:
+                    pass
+        label_list = json.dumps(list(set(label_list)))
 
         server = photo.get('server')
         farm = photo.get('farm')
@@ -93,7 +96,135 @@ if __name__ == "__main__":
         'database': 'flickr'
     }
 
+    labeldict = {
+        'visual_arts': 3,
+        'funny': 3,
+        'no_persons': 4,
+        'birthday':	3,
+        'natural': 2,
+        'plants': 2,
+        'male': 10,
+        'big_group': 10,
+        'indoor': 6,
+        'cute':	3,
+        'architecture': 12,
+        'church': 12,
+        'flowers': 2,
+        'adult': 10,
+        'people': 10,
+        'outdoor': 2,
+        'clouds': 11,
+        'bridge': 12,
+        'travel':	3,
+        'sky':11,
+        'single_person':10,
+        'aestethic_impression':	3,
+        'animals':	0,
+        'insect':	0,
+        'scary':	8,
+        'building_sights':12,
+        'happy':	8,
+        'summer':13,
+        'landscape_nature':	2,
+        'calm':	8,
+        'water':	2,
+        'artificial':	3,
+        'citylife':12,
+        'park_garden':	2,
+        'sunny':11,
+        'trees':	2,
+        'fancy':	3,
+        'partylife':	3,
+        'musicalinstrument':	4,
+        'work':10,
+        'female':10,
+        'portrait':	3,
+        'winter':13,
+        'still_life':	3,
+        'mountains':	5,
+        'small_group':10,
+        'painting':	3,
+        'euphoric':	8,
+        'flowers':	2,
+        'sunset_sunrise':11,
+        'family_friends':10,
+        'teenager':10,
+        'autumn':13,
+        'river':	2,
+        'bird':	0,
+        'melancholic':	8,
+        'boring':	8,
+        'street':12,
+        'vehicle':	7,
+        'ship':	7,
+        'unpleasant':	8,
+        'town':12,
+        'buildings':12,
+        'sea':	2,
+        'car':	7,
+        'grafitti':	3,
+        'house':12,
+        'grass':	2,
+        'person':10,
+        'child':10,
+        'mountain':	5,
+        'temple':12,
+        'rocks':	2,
+        'lake':	2,
+        'sports':	1,
+        'abstract':	3,
+        'train':	7,
+        'toy':	4,
+        'cityscape':12,
+        'snow':13,
+        'spring':13,
+        'bodypart':10,
+        'horse':	0,
+        'old_person':10,
+        'bicycle':	4,
+        'tree':	2,
+        'ocean':	2,
+        'valley':	2,
+        'beach':	2,
+        'rain':13,
+        'dog':	0,
+        'fish':	0,
+        'coral':	2,
+        'animal':	0,
+        'window':	4,
+        'road':	6,
+        'sign':	4,
+        'airport':	6,
+        'airplane':	6,
+        'skateboard':	4,
+        'sun':13,
+        'railroad':12,
+        'tower':	6,
+        'sand':	2,
+        'police':10,
+        'garden':	2,
+        'desert':	2,
+        'birds':	0,
+        'running':	1,
+        'computer':	4,
+        'baby':10,
+        'wedding':	3,
+        'horses':	0,
+        'bear':	0,
+        'protest':	3,
+        'plane':	7,
+        'waterfall':	2,
+        'fire':2,
+        'statue':	6,
+        'cow':	0,
+        'flags':	4,
+        'boats':	4,
+        'rainbow':	2,
+        'castle':	12
+    }
+
+
     db, cursor = setup_connection(config)
-    main(sys.argv[1], cursor)
+    main(sys.argv[1], cursor, labeldict)
     cursor.close()
     db.close()
