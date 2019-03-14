@@ -15,6 +15,10 @@ let translation_x = 0;
 let translation_y = 0;
 let scale_overall = 1;
 
+let labels_select = false;
+let lab1 = "[]"; 
+let lab2 = "[]";
+
 // Event listener for checkboxes
 d3.selectAll(".categoryfilter").on("change", filtercategories);
 
@@ -183,7 +187,7 @@ function mouseoverCenter(d){
     if(!inCenterpoint & outCenterpoint){
         if(d3.select(circle_most_views).attr('checked') == 'false'){
             d3.select(circle_most_views)
-                .attr("r", 30)
+                .attr("r", 10)
                 .attr("fill", "red")
         }
 
@@ -204,12 +208,13 @@ function mouseoverCenter(d){
             d3.select(circle_most_views)
                 .attr("fill", "blue")
                 .attr('checked','true')
-                .attr("r", 30);
+                .attr("r", 10);
             image1.style("opacity", 1.0);
             selectfirst = false;
             selectsecond = true;
             selecturl1 = url_most_views;
-            image1.html('<img src="' + selecturl1 + '">');
+            image1.html('<img src="' + selecturl1 + '">')
+            lab1 = circle_most_views.dataset.labels;
         }else if(!selectfirst & selectsecond & d3.select(circle_most_views).attr('checked') == 'false'){
             d3.selectAll('circle[fill=green]')
                 .attr("fill", "none")
@@ -217,12 +222,20 @@ function mouseoverCenter(d){
             d3.select(circle_most_views)
                 .attr("fill", "green")
                 .attr('checked','true')
-                .attr("r", 30);
+                .attr("r", 10);
             image2.style("opacity", 1.0);
             selectfirst = true;
             selectsecond = false;
             selecturl2 = url_most_views;
-            image2.html('<img src="' + url_most_views + '">');
+            image2.html('<img src="' + url_most_views + '">')
+            lab2 = circle_most_views.dataset.labels;
+        }
+        // to make the graph        
+        if (labels_select == false){        
+            make_graph(lab1, lab2)      
+            labels_select = true;       
+        }else{      
+            update_graph(lab1, lab2)        
         }
     }
 
@@ -353,6 +366,7 @@ function search(quadtree, x0, y0, x3, y3){
     return in_cell;
 }
 
+
 function load_tree(x_offset, y_offset, scale){
     let tree = d3.quadtree();
 
@@ -389,28 +403,48 @@ function load_tree(x_offset, y_offset, scale){
     centerTexts.selectAll('.centerText').remove()
 
     centers.selectAll(".centerPoint")
-   .data(clusterPoints)
-   .enter().append("circle")
-   .attr("class", function(d) {return "centerPoint"})
-   .attr("cx", function(d) {return (d[0] - x_offset)/scale;})
-   .attr("cy", function(d) {return (d[1] - y_offset)/scale;})
-   .attr("fill", '#FFA500')
-   .attr("opacity", 0.75)
-   .attr("r", function(d, i) {return pointSizeScale((d[2].length/scale)*4);})
-   .attr('checked', 'false')
-   .on("mouseover", function(d){mouseoverCenter(d)})
-   .on("mouseout", function(d){mouseoutCenter(d)});
+       .data(clusterPoints)
+       .enter().append("circle")
+       .attr("class", function(d) {return "centerPoint"})
+       .attr("cx", function(d) {return (d[0] - x_offset)/scale;})
+       .attr("cy", function(d) {return (d[1] - y_offset)/scale;})
+       .attr("fill", '#FFA500')
+       .attr("opacity", 0.4)
+       .attr("r", function(d, i) {return pointSizeScale((d[2].length/scale)*3);})
+       .attr('checked', 'false')
+       .on("mouseover", function(d){mouseoverCenter(d)})
+       .on("mouseout", function(d){mouseoutCenter(d)});
 
    centerTexts.selectAll(".centerText")
    .data(clusterPoints)
-      .enter()
-      .append('text')
-      .text(function(d){if(d[2].length > 25){return d[2].length;}})
-      .attr('fill', 'red')
-      .attr("class", function(d) {return "centerText"})
-      .attr("x", function(d) {return (d[0] - x_offset)/scale;})
-      .attr("y", function(d) {return (d[1] - y_offset)/scale;})
-      .style("text-anchor", "middle")
-      .attr("dominant-baseline", "central")
-      .attr("fontsize", function(d, i) {return d[2].length/(scale*16) + "em";})
+        .enter()
+        .append('text')
+        .text(function(d){if(d[2].length > 25){return d[2].length;}})
+        .attr('fill', 'red')
+        .attr("class", function(d) {return "centerText"})
+        .attr("x", function(d) {return (d[0] - x_offset)/scale;})
+        .attr("y", function(d) {return (d[1] - y_offset)/scale;})
+        .style("text-anchor", "middle")
+        // .attr("font-size", function(d) { return Math.min(2 * d.r, (2 * d.r - 8) / this.getComputedTextLength() * 24) + "em"; })
+        // .attr("dominant-baseline", "central")
+        // .attr("font-size",  "0.5em");
+        .attr("font-size", function(d){
+            return fontLetters(d, scale);
+        })
 }
+
+function fontLetters(d, scale) {
+    console.log(d.circle)
+    let font_size = d[2].length/(scale*64);
+
+    if(font_size < 0.2){
+        return 0.2 + "em";
+    }else if(font_size > 2){
+        return 2 + "em";
+    }
+    else{
+        return font_size + "em";
+    }
+}
+
+
