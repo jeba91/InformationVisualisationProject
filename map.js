@@ -16,7 +16,7 @@ let translation_y = 0;
 let scale_overall = 1;
 
 let labels_select = false;
-let lab1 = "[]"; 
+let lab1 = "[]";
 let lab2 = "[]";
 
 // Event listener for checkboxes
@@ -30,7 +30,74 @@ function intersect(a, b) {
     });
 }
 
+function filtersunburstlabels(name){
+    alt_coord = [];
+
+    dots.selectAll('circle').each(function(d){
+        if(JSON.parse(this.dataset.labels).indexOf(name.toLowerCase()) != -1){
+
+            this.dataset.appear_in_filter = true;
+
+
+        }
+        else{
+            this.dataset.appear_in_filter = false;
+        }
+        xn = this.cx.baseVal.value*scale_overall + translation_x;
+        yn = this.cy.baseVal.value*scale_overall + translation_y;
+
+        if(xn > 0 && xn < width && yn > 0 && yn <height){
+            if(this.dataset.appear_in_filter=='true'){
+                alt_coord.push([xn, yn, this.dataset.url, parseInt(this.dataset.views), this]);
+            }
+        }
+    });
+
+    coordinates = alt_coord;
+
+    load_tree(translation_x, translation_y, scale_overall);
+}
+
+function filtersunburstcategories(name){
+    categorydict = {"Animal": 0, "Sports": 1, "Nature": 2, "Cultural": 3, "Object": 4, "Landscape": 5, "Urban": 6, "Vehicle": 7, "Emotions": 8, "Food": 9, "People": 10, "Sky": 11, "Architecture": 12, "Weather/Seasons": 13};
+
+    categories_present = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+    if(name != 'main'){
+        categories_present = []
+        categories_present.push(categorydict[name]);
+    }
+
+    alt_coord = [];
+
+    dots.selectAll('circle').each(function(d){
+        if(categories_present.length == 14){
+            this.dataset.appear_in_filter = true;
+        }
+        else if(intersect(JSON.parse(this.dataset.categories), categories_present).length>0){
+            this.dataset.appear_in_filter = true;
+        }
+        else{
+            this.dataset.appear_in_filter = false;
+        }
+
+        xn = this.cx.baseVal.value*scale_overall + translation_x;
+        yn = this.cy.baseVal.value*scale_overall + translation_y;
+
+        if(xn > 0 && xn < width && yn > 0 && yn <height){
+            if(this.dataset.appear_in_filter=='true'){
+                alt_coord.push([xn, yn, this.dataset.url, parseInt(this.dataset.views), this]);
+            }
+        }
+    });
+
+    coordinates = alt_coord;
+
+
+    load_tree(translation_x, translation_y, scale_overall);
+}
+
 function filtercategories(){
+    console.log('');
     categories_present = [];
     checkboxes = d3.selectAll(".categoryfilter").nodes()
     checkboxes.forEach(function(d, i){
@@ -45,7 +112,7 @@ function filtercategories(){
         if(categories_present.length == 14){
             this.dataset.appear_in_filter = true;
         }
-        else if(intersect(JSON.parse(this.dataset.labels), categories_present).length>0){
+        else if(intersect(JSON.parse(this.dataset.categories), categories_present).length>0){
             this.dataset.appear_in_filter = true;
         }
         else{
@@ -230,12 +297,12 @@ function mouseoverCenter(d){
             image2.html('<img src="' + url_most_views + '">')
             lab2 = circle_most_views.dataset.labels;
         }
-        // to make the graph        
-        if (labels_select == false){        
-            make_graph(lab1, lab2)      
-            labels_select = true;       
-        }else{      
-            update_graph(lab1, lab2)        
+        // to make the graph
+        if (labels_select == false){
+            make_graph(lab1, lab2)
+            labels_select = true;
+        }else{
+            update_graph(lab1, lab2)
         }
     }
 
@@ -322,6 +389,9 @@ function load_dots(){
                 })
                 .attr('data-labels', function(d){
                     return d['labels'];
+                })
+                .attr('data-categories', function(d){
+                    return d['categories'];
                 })
                 .attr('data-url', function(d){
                     return d['url'];
@@ -434,7 +504,6 @@ function load_tree(x_offset, y_offset, scale){
 }
 
 function fontLetters(d, scale) {
-    console.log(d.circle)
     let font_size = d[2].length/(scale*64);
 
     if(font_size < 0.2){
@@ -446,5 +515,3 @@ function fontLetters(d, scale) {
         return font_size + "em";
     }
 }
-
-

@@ -14,8 +14,8 @@ def setup_connection(config):
 
 def db_entry(cursor, *args):
     try:
-        cursor.execute("INSERT INTO photos (photo_id, title, description, poster, latitude, longitude, taken, posted, url, groups, tags, labels, server, farm , secret, views) \
-        VALUES (%s,'%s','%s', '%s', %s, %s,'%s','%s' ,'%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')" % args)
+        cursor.execute("INSERT INTO photos (photo_id, title, description, poster, latitude, longitude, taken, posted, url, groups, tags, labels, categories, server, farm , secret, views) \
+        VALUES (%s,'%s','%s', '%s', %s, %s,'%s','%s' ,'%s', '%s', '%s', '%s', '%s', '%s', '%s','%s', '%s')" % args)
     except mysql.connector.Error as e:
         print(e)
 
@@ -70,15 +70,18 @@ def main(file_path, cursor, labeldict):
             group_list.append(group)
         group_list = json.dumps(group_list)
 
+        category_list = []
         label_list = []
-        labels = photo.find('labels')
+        labels = photo.find('l abels')
         if labels is not None:
             for label in labels:
                 label = label.text.replace("'", "''").lower()
                 try:
-                    label_list.append(labeldict[label])
+                    category_list.append(labeldict[label])
+                    label_list.append(label)
                 except:
                     pass
+        category_list = json.dumps(list(set(category_list)))
         label_list = json.dumps(list(set(label_list)))
 
         server = photo.get('server')
@@ -86,7 +89,7 @@ def main(file_path, cursor, labeldict):
         secret = photo.get('secret')
         views = photo.get('views')
 
-        db_entry(cursor, photo_id, title, description, poster, latitude, longitude, date_taken, date_posted, url, group_list, tag_list, label_list, server, farm, secret, views)
+        db_entry(cursor, photo_id, title, description, poster, latitude, longitude, date_taken, date_posted, url, group_list, tag_list, label_list, category_list, server, farm, secret, views)
 
 if __name__ == "__main__":
     config = {
