@@ -1,0 +1,193 @@
+{
+    "name": "main",
+    "children": [
+    {
+        "name": "Animal",
+        "children": [
+            {"name": "Animals", "size": 1},
+            {"name": "Insect", "size": 1},
+            {"name": "Bird", "size": 1},
+            {"name": "Horse", "size": 1},
+            {"name": "Dog", "size": 1},
+            {"name": "Fish", "size": 1},
+            {"name": "Animal", "size": 1},
+            {"name": "Birds", "size": 1},
+            {"name": "Horses", "size": 1},
+            {"name": "Bear", "size": 1},
+            {"name": "Cow", "size": 1}
+        ]
+    },
+    {
+        "name": "Sports",
+        "children": [
+            {"name": "Sports", "size": 1},
+            {"name": "Running", "size": 1}
+        ]
+    },
+    {
+        "name": "Nature",
+        "children": [
+            {"name": "Natural", "size": 1},
+            {"name": "Plants", "size": 1},
+            {"name": "Flowers", "size": 1},
+            {"name": "Outdoor", "size": 1},
+            {"name": "Landscape Nature", "size": 1},
+            {"name": "Water", "size": 1},
+            {"name": "Park Garden", "size": 1},
+            {"name": "Trees", "size": 1},
+            {"name": "Flowers", "size": 1},
+            {"name": "River", "size": 1},
+            {"name": "Sea", "size": 1},
+            {"name": "Grass", "size": 1},
+            {"name": "Rocks", "size": 1},
+            {"name": "Lake", "size": 1},
+            {"name": "Tree", "size": 1},
+            {"name": "Ocean", "size": 1},
+            {"name": "Valley", "size": 1},
+            {"name": "Beach", "size": 1},
+            {"name": "Coral", "size": 1},
+            {"name": "Sand", "size": 1},
+            {"name": "Garden", "size": 1},
+            {"name": "Desert", "size": 1},
+            {"name": "Waterfall", "size": 1},
+            {"name": "Rainbow", "size": 1}
+        ]
+    },
+    {
+        "name": "Cultural",
+        "children": [
+            {"name": "Visual Arts", "size": 1},
+            {"name": "Funny", "size": 1},
+            {"name": "Birthday", "size": 1},
+            {"name": "Cute", "size": 1},
+            {"name": "Travel", "size": 1},
+            {"name": "Aestethic Impression", "size": 1},
+            {"name": "Artificial", "size": 1},
+            {"name": "Fancy", "size": 1},
+            {"name": "Partylife", "size": 1},
+            {"name": "Portrait", "size": 1},
+            {"name": "Still Life", "size": 1},
+            {"name": "Painting", "size": 1},
+            {"name": "Grafitti", "size": 1},
+            {"name": "Abstract", "size": 1},
+            {"name": "Wedding", "size": 1},
+            {"name": "Protest", "size": 1}
+        ]
+    },
+    {
+        "name": "Object",
+        "children": [
+            {"name": "No Persons", "size": 1},
+            {"name": "Musicalinstrument", "size": 1},
+            {"name": "Toy", "size": 1},
+            {"name": "Bicycle", "size": 1},
+            {"name": "Window", "size": 1},
+            {"name": "Sign", "size": 1},
+            {"name": "Skateboard", "size": 1},
+            {"name": "Computer", "size": 1},
+            {"name": "Flags", "size": 1},
+            {"name": "Boats", "size": 1}
+        ]
+    },
+    {
+        "name": "Landscape",
+        "children":[
+            {"name": "Mountain", "size": 1},
+            {"name": "Mountains", "size": 1}
+        ]
+    },
+    {
+        "name": "Urban",
+        "children": [
+            {"name": "Indoor", "size": 1},
+            {"name": "Road", "size": 1},
+            {"name": "Airport", "size": 1},
+            {"name": "Airplane", "size": 1},
+            {"name": "Tower", "size": 1},
+            {"name": "Statue", "size": 1}
+        ]
+    },
+    {
+        "name": "Vehicle",
+        "children": [
+            {"name": "Vehicle", "size": 1},
+            {"name": "Ship", "size": 1},
+            {"name": "Car", "size": 1},
+            {"name": "Train", "size": 1},
+            {"name": "Plane", "size": 1}
+        ]
+    },
+    {
+        "name": "Emotions",
+        "children": [
+            {"name": "Scary", "size": 1},
+            {"name": "Happy", "size": 1},
+            {"name": "Calm", "size": 1},
+            {"name": "Euphoric", "size": 1},
+            {"name": "Melancholic", "size": 1},
+            {"name": "Boring", "size": 1},
+            {"name": "Unpleasant", "size": 1}
+        ]
+    },
+    {
+        "name": "Food",
+        "children": [
+            {"name": "Male", "size": 1},
+            {"name": "Big Group", "size": 1},
+            {"name": "Adult", "size": 1},
+            {"name": "People", "size": 1},
+            {"name": "Single Person", "size": 1},
+            {"name": "Work", "size": 1},
+            {"name": "Female", "size": 1},
+            {"name": "Small Group", "size": 1},
+            {"name": "Family Friends", "size": 1},
+            {"name": "Teenager", "size": 1},
+            {"name": "Person", "size": 1},
+            {"name": "Child", "size": 1},
+            {"name": "Bodypart", "size": 1},
+            {"name": "Old Person", "size": 1},
+            {"name": "Police", "size": 1},
+            {"name": "Baby", "size": 1}
+        ]
+    },
+    {
+        "name": "Sky",
+        "children": [
+            {"name": "Clouds", "size": 1},
+            {"name": "Sky", "size": 1},
+            {"name": "Sunny", "size": 1},
+            {"name": "Sunset Sunrise", "size": 1}
+        ]
+    },
+    {
+        "name": "Architecture",
+        "children": [
+            {"name": "Architecture", "size": 1},
+            {"name": "Church", "size": 1},
+            {"name": "Bridge", "size": 1},
+            {"name": "Building Sights", "size": 1},
+            {"name": "Citylife", "size": 1},
+            {"name": "Street", "size": 1},
+            {"name": "Town", "size": 1},
+            {"name": "Buildings", "size": 1},
+            {"name": "House", "size": 1},
+            {"name": "Temple", "size": 1},
+            {"name": "Cityscape", "size": 1},
+            {"name": "Railroad", "size": 1},
+            {"name": "Castle", "size": 1}
+        ]
+    },
+    {
+        "name": "Weather/Seasons",
+        "children": [
+            {"name": "summer", "size": 1},
+            {"name": "winter", "size": 1},
+            {"name": "autumn", "size": 1},
+            {"name": "snow", "size": 1},
+            {"name": "spring", "size": 1},
+            {"name": "rain", "size": 1},
+            {"name": "sun", "size": 1}
+        ]
+    }
+    ]
+}
