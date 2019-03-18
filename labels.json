@@ -130,7 +130,7 @@
         ]
     },
     {
-        "name": "Food",
+        "name": "People",
         "children": [
             {"name": "Male", "size": 1},
             {"name": "Big Group", "size": 1},
