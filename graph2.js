@@ -9,8 +9,16 @@ $.getJSON('./label_to_category.json', function(data) {
     label_to_category = data;
 });
 
+function clean_text(txt){
+    txt = txt.split('_');
+    txt = txt.join(' ');
+    return txt;
+}
+
+console.log(clean_text("pope_poep1"))
+
 function build_graph(photo1, photo2){
-    console.log(photo1,photo2)
+
     let data = {
         nodes: [{id: "Photo1", type: "photo1"}, {id: "Photo2", type:"photo2"}],
         links: []
@@ -51,7 +59,6 @@ function build_graph(photo1, photo2){
         }
 
         labels2.forEach(function(d){
-            console.log(d, label_to_category[d], category_dict[label_to_category[d]])
             data.nodes.push({id: d, type: "label"});
             data.links.push({source: d, target: category_dict[label_to_category[d]]+"2", value: 1});
         });
@@ -62,12 +69,11 @@ function build_graph(photo1, photo2){
         }
 
         categories2.forEach(function(d){
-            console.log(d, category_dict[d])
             data.nodes.push({id: category_dict[d]+"2", type: "category2"})
             data.links.push({source: category_dict[d]+"2", target: "Photo2", value: 1});
         });
     }
-    console.log(data)
+
     build_from_data(data);
 }
 
@@ -93,6 +99,10 @@ function build_from_data(data){
             d.x0 = 200;
             d.x1 = 220;
         }
+        // if(d.type == "photo1" || d.type=="photo2"){
+        //     d.y0 = 0;
+        //     d.y1 = 500;
+        // }
     });
 
     graph_svg.selectAll('*').remove();
@@ -107,6 +117,7 @@ function build_from_data(data){
         .attr("d", d3.sankeyLinkHorizontal())
         .attr("fill", "none")
         .attr("stroke", "#606060")
+        .attr("poep", function(d){console.log(d.width)})
         .attr("stroke-width", d => d.width)
         .attr("stoke-opacity", 0.5);
 
