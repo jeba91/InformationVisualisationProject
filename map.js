@@ -1,6 +1,6 @@
 // Height and width of map
-let width = 2048;
-let height = 1024;
+let width = 0.8*(d3.select('#worldmap').node().getBoundingClientRect().width);
+let height = 0.5*(window.innerHeight);
 
 let selectfirst = true;
 let selectsecond = false;
@@ -18,6 +18,8 @@ let scale_overall = 1;
 let labels_select = false;
 let lab1 = "[]";
 let lab2 = "[]";
+
+let radius = 0;
 
 // Event listener for checkboxes
 d3.selectAll(".categoryfilter").on("change", filtercategories);
@@ -97,7 +99,6 @@ function filtersunburstcategories(name){
 }
 
 function filtercategories(){
-    console.log('');
     categories_present = [];
     checkboxes = d3.selectAll(".categoryfilter").nodes()
     checkboxes.forEach(function(d, i){
@@ -152,6 +153,8 @@ let zoom = d3.zoom()
 
 // Translates map, dots, centers and texts on each move (translate and scale)
 function zoomed(){
+    radius = (-1/20*d3.event.transform.k + 1 + (1/20));
+
     map.attr('transform', d3.event.transform);
     dots.attr('transform', d3.event.transform);
     centers.attr('transform', d3.event.transform);
@@ -205,8 +208,10 @@ let centerTexts = svg.append('g');
 let centers = svg.append('g');
 let image1 = d3.select('#photo1')
     .append('one')
+    .attr("class","img-fluid");
 let image2 = d3.select('#photo2')
-    .append('two');
+    .append('two')
+    .attr("class","img-fluid");
 
 d3.select("#photo1").on("click", reselect);
 d3.select("#photo2").on("click", reselect);
@@ -254,7 +259,7 @@ function mouseoverCenter(d){
     if(!inCenterpoint & outCenterpoint){
         if(d3.select(circle_most_views).attr('checked') == 'false'){
             d3.select(circle_most_views)
-                .attr("r", 10)
+                .attr("r", radius)
                 .attr("fill", "red")
         }
 
@@ -275,7 +280,7 @@ function mouseoverCenter(d){
             d3.select(circle_most_views)
                 .attr("fill", "blue")
                 .attr('checked','true')
-                .attr("r", 10);
+                .attr("r", radius);
             image1.style("opacity", 1.0);
             selectfirst = false;
             selectsecond = true;
@@ -289,7 +294,7 @@ function mouseoverCenter(d){
             d3.select(circle_most_views)
                 .attr("fill", "green")
                 .attr('checked','true')
-                .attr("r", 10);
+                .attr("r", radius);
             image2.style("opacity", 1.0);
             selectfirst = true;
             selectsecond = false;
@@ -334,6 +339,10 @@ function mouseoutCenter(d){
         image2.transition().duration(200).style("opacity", .9);
         image2.html('<img src="' + selecturl2 + '">');
     }
+
+    d3.selectAll('circle[fill=red]')
+        .attr("fill", "none")
+        .attr('checked','false');
 }
 
 let grid = [];
@@ -504,14 +513,18 @@ function load_tree(x_offset, y_offset, scale){
 }
 
 function fontLetters(d, scale) {
+    console.log(d.circle)
     let font_size = d[2].length/(scale*64);
+    let smallest = 0.2;
+    let biggest = 1;
 
-    if(font_size < 0.2){
-        return 0.2 + "em";
-    }else if(font_size > 2){
-        return 2 + "em";
+    if(font_size < smallest){
+        return smallest + "em";
+    }else if(font_size > biggest){
+        return biggest + "em";
     }
     else{
         return font_size + "em";
     }
 }
+
