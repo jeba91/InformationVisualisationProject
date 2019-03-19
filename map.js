@@ -15,8 +15,8 @@ let translation_x = 0;
 let translation_y = 0;
 let scale_overall = 1;
 
-let label1 = "";
-let label2 = "";
+let title1 = "";
+let title2 = "";
 
 let labels_select = false;
 let lab1 = "[]";
@@ -225,10 +225,9 @@ function mouseoverCenter(d){
     let max_views_index = indexOfMax(views);
     let url_most_views = d[2][max_views_index][2];
     let circle_most_views = d[2][max_views_index][4];
-    let title = d3.select(circle_most_views).attr("data-categories");
-
 
     if(!inCenterpoint & outCenterpoint){
+        let title = d3.select(circle_most_views).attr("data-categories");
         if(d3.select(circle_most_views).attr('checked') == 'false'){
             d3.select(circle_most_views)
                 .attr("r", radius)
@@ -261,7 +260,8 @@ function mouseoverCenter(d){
             selectsecond = true;
             selecturl1 = url_most_views;
             image1.html('<img src="' + selecturl1 + '">')
-            image1.append("title").text(title).style("display", "block") 
+            title1 = d3.select(circle_most_views).attr("data-categories");
+            image1.append("title").text(title1).style("display", "block")
             lab1 = circle_most_views.dataset.labels;
             graph1 = circle_most_views;
         }else if(!selectfirst & selectsecond & d3.select(circle_most_views).attr('checked') == 'false'){
@@ -277,7 +277,8 @@ function mouseoverCenter(d){
             selectsecond = false;
             selecturl2 = url_most_views;
             image2.html('<img src="' + url_most_views + '">')
-            image2.append("title").text(title).style("display", "block")   
+            title2 = d3.select(circle_most_views).attr("data-categories")
+            image2.append("title").text(title2).style("display", "block")  
             lab2 = circle_most_views.dataset.labels;
             graph2 = circle_most_views;
         }
@@ -302,7 +303,6 @@ function mouseoutCenter(d){
     let max_views_index = indexOfMax(views);
     let url_most_views = d[2][max_views_index][2];
     let circle_most_views = d[2][max_views_index][4];
-    let title = d3.select(circle_most_views).attr("data-categories");
 
     inCenterpoint = false;
     outCenterpoint =  true;
@@ -314,12 +314,12 @@ function mouseoutCenter(d){
     if(selectfirst){
         image1.transition().duration(200).style("opacity", .9);
         image1.html('<img src="' + selecturl1 + '">');
-        image1.append("title").text(title).style("display", "block");
+        image1.append("title").text(title1).style("display", "block")
     }
     else if(selectsecond){
         image2.transition().duration(200).style("opacity", .9);
         image2.html('<img src="' + selecturl2 + '">');
-        image2.append("title").text(title).style("display", "block");  
+        image2.append("title").text(title2).style("display", "block") 
     }
 
     d3.selectAll('circle[fill=red]')
