@@ -25,7 +25,7 @@ svg{
 	display:table-cell;
     vertical-align:middle;
 }
-/*.box1{
+.box1{
 	border: 4px ridge grey;
 }
 
@@ -35,7 +35,7 @@ svg{
 
 .box3{
 	border: 4px ridge grey;
-}*/
+}
 
 .box4{
     display: flex;
