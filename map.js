@@ -19,10 +19,12 @@ let labels_select = false;
 let lab1 = "[]";
 let lab2 = "[]";
 
+let graph1;
+let graph2;
+
+
 let radius = 0;
 
-// Event listener for checkboxes
-d3.selectAll(".categoryfilter").on("change", filtercategories);
 
 function intersect(a, b) {
     var t;
@@ -61,7 +63,7 @@ function filtersunburstlabels(name){
 }
 
 function filtersunburstcategories(name){
-    categorydict = {"Animal": 0, "Sports": 1, "Nature": 2, "Cultural": 3, "Object": 4, "Landscape": 5, "Urban": 6, "Vehicle": 7, "Emotions": 8, "Food": 9, "People": 10, "Sky": 11, "Architecture": 12, "Weather/Seasons": 13};
+    categorydict = {"Animal": 0, "Sports": 1, "Nature": 2, "Cultural": 3, "Object": 4, "Landscape": 5, "Urban": 6, "Vehicle": 7, "Emotions": 8, "People": 9, "Sky": 10, "Architecture": 11, "Weather/Seasons": 12};
 
     categories_present = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
     if(name != 'main'){
@@ -98,43 +100,8 @@ function filtersunburstcategories(name){
     load_tree(translation_x, translation_y, scale_overall);
 }
 
-function filtercategories(){
-    categories_present = [];
-    checkboxes = d3.selectAll(".categoryfilter").nodes()
-    checkboxes.forEach(function(d, i){
-        if(d.checked){
-            categories_present.push(i);
-        }
-    });
-
-    alt_coord = [];
-
-    dots.selectAll('circle').each(function(d){
-        if(categories_present.length == 14){
-            this.dataset.appear_in_filter = true;
-        }
-        else if(intersect(JSON.parse(this.dataset.categories), categories_present).length>0){
-            this.dataset.appear_in_filter = true;
-        }
-        else{
-            this.dataset.appear_in_filter = false;
-        }
-
-        xn = this.cx.baseVal.value*scale_overall + translation_x;
-        yn = this.cy.baseVal.value*scale_overall + translation_y;
-
-        if(xn > 0 && xn < width && yn > 0 && yn <height){
-            if(this.dataset.appear_in_filter=='true'){
-                alt_coord.push([xn, yn, this.dataset.url, parseInt(this.dataset.views), this]);
-            }
-        }
-    });
-
-    coordinates = alt_coord;
 
 
-    load_tree(translation_x, translation_y, scale_overall);
-}
 
 // Type of projection
 let projection = d3.geoMercator()
@@ -287,6 +254,7 @@ function mouseoverCenter(d){
             selecturl1 = url_most_views;
             image1.html('<img src="' + selecturl1 + '">')
             lab1 = circle_most_views.dataset.labels;
+            graph1 = circle_most_views;
         }else if(!selectfirst & selectsecond & d3.select(circle_most_views).attr('checked') == 'false'){
             d3.selectAll('circle[fill=green]')
                 .attr("fill", "none")
@@ -301,13 +269,14 @@ function mouseoverCenter(d){
             selecturl2 = url_most_views;
             image2.html('<img src="' + url_most_views + '">')
             lab2 = circle_most_views.dataset.labels;
+            graph2 = circle_most_views;
         }
         // to make the graph
         if (labels_select == false){
-            make_graph(lab1, lab2)
+            build_graph(graph1, graph2)
             labels_select = true;
         }else{
-            update_graph(lab1, lab2)
+            build_graph(graph1, graph2)
         }
     }
 
