@@ -10,12 +10,16 @@ $.getJSON('./label_to_category.json', function(data) {
 });
 
 function clean_text(txt){
+    if(txt.substring(txt.length - 1)=='1' || txt.substring(txt.length - 1)=='2'){
+        txt = txt.substring(0, txt.length - 1);
+    }
     txt = txt.split('_');
+    for(var i = 0; i<txt.length; i++){
+        txt[i] = txt[i].charAt(0).toUpperCase() + txt[i].substring(1);
+    }
     txt = txt.join(' ');
     return txt;
 }
-
-console.log(clean_text("pope_poep1"))
 
 function build_graph(photo1, photo2){
 
@@ -108,31 +112,26 @@ function build_from_data(data){
     graph_svg.selectAll('*').remove();
 
     let links = graph_svg.append("g")
-        .classed("links", true)
         .selectAll("path")
         .data(graph.links)
         .enter()
         .append("path")
-        .classed("link", true)
         .attr("d", d3.sankeyLinkHorizontal())
         .attr("fill", "none")
         .attr("stroke", "#606060")
-        .attr("poep", function(d){console.log(d.width)})
         .attr("stroke-width", d => d.width)
         .attr("stoke-opacity", 0.5);
 
     let nodes = graph_svg.append("g")
-        .classed("nodes", true)
         .selectAll("rect")
         .data(graph.nodes)
         .enter()
         .append("rect")
-        .classed("node", true)
         .attr("x", d => d.x0)
         .attr("y", d => d.y0)
         .attr("width", d => d.x1 - d.x0)
         .attr("height", d => d.y1 - d.y0)
-        .attr("fill", "blue")
+        .attr("fill", d => color(d.id))
         .attr("opacity", 0.8);
 
     let text = graph_svg.append("g")
@@ -144,5 +143,5 @@ function build_from_data(data){
         .attr("y", d => (d.y1 + d.y0) / 2)
         .attr("dy", "0.35em")
         .attr("text-anchor", d => d.x0 < 500 / 2 ? "start" : "end")
-        .text(d => d.id);
+        .text(d => clean_text(d.id));
 }
