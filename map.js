@@ -15,6 +15,9 @@ let translation_x = 0;
 let translation_y = 0;
 let scale_overall = 1;
 
+let label1 = "";
+let label2 = "";
+
 let labels_select = false;
 let lab1 = "[]";
 let lab2 = "[]";
@@ -175,10 +178,10 @@ let centerTexts = svg.append('g');
 let centers = svg.append('g');
 let image1 = d3.select('#photo1')
     .append('one')
-    .attr("class","img-fluid");
+    .attr("class", "img-fluid");
 let image2 = d3.select('#photo2')
     .append('two')
-    .attr("class","img-fluid");
+    .attr("class", "img-fluid")
 
 d3.select("#photo1").on("click", reselect);
 d3.select("#photo2").on("click", reselect);
@@ -222,6 +225,8 @@ function mouseoverCenter(d){
     let max_views_index = indexOfMax(views);
     let url_most_views = d[2][max_views_index][2];
     let circle_most_views = d[2][max_views_index][4];
+    let title = d3.select(circle_most_views).attr("data-categories");
+
 
     if(!inCenterpoint & outCenterpoint){
         if(d3.select(circle_most_views).attr('checked') == 'false'){
@@ -233,12 +238,15 @@ function mouseoverCenter(d){
         if(selectfirst){
             image1.transition().duration(200).style("opacity", .9);
             image1.html('<img src="' + url_most_views + '">');
+            image1.append("title").text(title).style("display", "block") 
         }
 
         else if(selectsecond){
             image2.transition().duration(200).style("opacity", .9);
             image2.html('<img src="' + url_most_views + '">');
+            image2.append("title").text(title).style("display", "block") 
         }
+
     }else if(inCenterpoint & !outCenterpoint){
         if(selectfirst & !selectsecond & d3.select(circle_most_views).attr('checked') == 'false'){
             d3.selectAll('circle[fill=blue]')
@@ -253,6 +261,7 @@ function mouseoverCenter(d){
             selectsecond = true;
             selecturl1 = url_most_views;
             image1.html('<img src="' + selecturl1 + '">')
+            image1.append("title").text(title).style("display", "block") 
             lab1 = circle_most_views.dataset.labels;
             graph1 = circle_most_views;
         }else if(!selectfirst & selectsecond & d3.select(circle_most_views).attr('checked') == 'false'){
@@ -268,6 +277,7 @@ function mouseoverCenter(d){
             selectsecond = false;
             selecturl2 = url_most_views;
             image2.html('<img src="' + url_most_views + '">')
+            image2.append("title").text(title).style("display", "block")   
             lab2 = circle_most_views.dataset.labels;
             graph2 = circle_most_views;
         }
@@ -292,6 +302,7 @@ function mouseoutCenter(d){
     let max_views_index = indexOfMax(views);
     let url_most_views = d[2][max_views_index][2];
     let circle_most_views = d[2][max_views_index][4];
+    let title = d3.select(circle_most_views).attr("data-categories");
 
     inCenterpoint = false;
     outCenterpoint =  true;
@@ -303,10 +314,12 @@ function mouseoutCenter(d){
     if(selectfirst){
         image1.transition().duration(200).style("opacity", .9);
         image1.html('<img src="' + selecturl1 + '">');
+        image1.append("title").text(title).style("display", "block");
     }
     else if(selectsecond){
         image2.transition().duration(200).style("opacity", .9);
         image2.html('<img src="' + selecturl2 + '">');
+        image2.append("title").text(title).style("display", "block");  
     }
 
     d3.selectAll('circle[fill=red]')

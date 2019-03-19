@@ -14,17 +14,13 @@ img{
 	max-width: 100%;
 	display: block;
 	margin: auto auto;
-}	
+}
 
 svg{
 	margin: auto;
 	display: block;
 }
 
-.img-fluid{
-	display:table-cell;
-    vertical-align:middle;
-}
 .box1{
 	border: 4px ridge grey;
 }
@@ -38,7 +34,6 @@ svg{
 }
 
 .box4{
-    display: flex;
 	border: 4px ridge grey;
 }
 
