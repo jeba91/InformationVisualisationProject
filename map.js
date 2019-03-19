@@ -1,8 +1,6 @@
 // Height and width of map
 let width = 0.8*(d3.select('#worldmap').node().getBoundingClientRect().width);
-let height = 0.6*(window.innerHeight);
-
-console.log(d3.select('#worldmap').node().parentNode.getBoundingClientRect())
+let height = 0.5*(window.innerHeight);
 
 let selectfirst = true;
 let selectsecond = false;

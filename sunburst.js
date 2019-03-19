@@ -14,8 +14,8 @@ d3.json("./labels.json").then(function(data) {
     var color = d3.scaleOrdinal().range(d3.quantize(d3.interpolateRainbow, data.children.length + 1));
     var format = d3.format(",d");
 
-    var width = 632;
-    var radius = width / 6;
+    var width = 300;
+    var radius = width / 4;
 
     var arc = d3.arc()
     .startAngle(d => d.x0)
@@ -25,13 +25,11 @@ d3.json("./labels.json").then(function(data) {
     .innerRadius(d => d.y0 * radius)
     .outerRadius(d => Math.max(d.y0 * radius, d.y1 * radius - 1))
 
-
-
     const root = partition(data);
 
     root.each(d => d.current = d);
 
-    // const svg = d3.select(DOM.svg(width, width))
+    // const svg = d3.select(DOM.svg(width, width))z
     const svg = d3.select("#labelselector").append("svg")
     .style("width", width)
     .style("height", width)

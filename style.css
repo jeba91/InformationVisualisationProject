@@ -13,16 +13,19 @@ img{
 	max-height: 100%;
 	max-width: 100%;
 	display: block;
-	margin: auto;
-	vertical-align: middle;
-}
+	margin: auto auto;
+}	
 
 svg{
 	margin: auto;
 	display: block;
 }
 
-.box1{
+.img-fluid{
+	display:table-cell;
+    vertical-align:middle;
+}
+/*.box1{
 	border: 4px ridge grey;
 }
 
@@ -32,20 +35,21 @@ svg{
 
 .box3{
 	border: 4px ridge grey;
-}
+}*/
 
 .box4{
+    display: flex;
 	border: 4px ridge grey;
 }
 
 .box4#photo1{
     background-color:#0E5D7B;	
     margin-top: 0px;
-    background:linear-gradient(white, lightblue);
+    background:radial-gradient(lightblue, white);
 }
 
 .box4#photo2{
     background-color:#0E5D7B;	
     margin-top: 0px;
-    background:linear-gradient(white, lightgreen);
+    background:radial-gradient(lightgreen, white);
 }
