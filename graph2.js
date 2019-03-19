@@ -1,7 +1,8 @@
 let graph_svg = d3.select("#chart").append('svg')
-.attr('width', 500)
+.attr('width', "100%")
 .attr('height', 500)
 .append("g")
+
 
 let category_dict = ["Animal", "Sports", "Nature", "Cultural", "Object", "Landscape", "Urban", "Vehicle", "Emotions", "People", "Sky", "Architecture", "Weather/Seasons"];
 let label_to_category;
@@ -82,7 +83,8 @@ function build_graph(photo1, photo2){
 }
 
 function build_from_data(data){
-    let sankey = d3.sankey().size([490, 490])
+    let diagram_width = parseInt(d3.select("#chart svg").style('width').replace("px", ""))
+    let sankey = d3.sankey().size([diagram_width, 490])
     .nodeId(d => d.id)
     .nodeWidth(20)
     .nodePadding(10)
@@ -90,18 +92,20 @@ function build_from_data(data){
 
     let graph = sankey(data);
 
+
+
     graph.nodes.forEach(function(d){
         if(d.type == "category1"){
-            d.x0 = 100;
-            d.x1 = 120;
+            d.x0 = diagram_width*0.25;
+            d.x1 = diagram_width*0.25 + 20;
         }
         if(d.type == "category2"){
-            d.x0 = 300;
-            d.x1 = 320;
+            d.x0 = diagram_width*0.75;
+            d.x1= diagram_width*0.75 + 20;
         }
         if(d.type == "label"){
-            d.x0 = 200;
-            d.x1 = 220;
+            d.x0 = diagram_width*0.5;
+            d.x1 = diagram_width*0.5 + 20;
         }
         // if(d.type == "photo1" || d.type=="photo2"){
         //     d.y0 = 0;
@@ -131,7 +135,7 @@ function build_from_data(data){
         .attr("y", d => d.y0)
         .attr("width", d => d.x1 - d.x0)
         .attr("height", d => d.y1 - d.y0)
-        .attr("fill", d => color(d.id))
+        .attr("fill", d => color(clean_text(d.id)))
         .attr("opacity", 0.8);
 
     let text = graph_svg.append("g")

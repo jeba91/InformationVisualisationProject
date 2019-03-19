@@ -482,7 +482,6 @@ function load_tree(x_offset, y_offset, scale){
 }
 
 function fontLetters(d, scale) {
-    console.log(d.circle)
     let font_size = d[2].length/(scale*64);
     let smallest = 0.2;
     let biggest = 1;
@@ -496,4 +495,3 @@ function fontLetters(d, scale) {
         return font_size + "em";
     }
 }
-
