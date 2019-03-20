@@ -46,6 +46,7 @@ d3.json("./labels.json").then(function(data) {
     .attr("fill", d => { while (d.depth > 1) d = d.parent; return color(d.data.name); })
     .attr("fill-opacity", d => arcVisible(d.current) ? (d.children ? 0.6 : 0.4) : 0)
     .attr("d", d => arc(d.current))
+    .attr("class", "outerLabels")
     .on("mouseover", function(d){d3.select(this).style("cursor", "pointer");})
     .on("click", clickOuter);
 
@@ -76,10 +77,13 @@ d3.json("./labels.json").then(function(data) {
     .on("click", clicked);
 
     function clickOuter(p){
-        filtersunburstlabels(p.data.name);
+        d3.selectAll(".outerLabels").attr('stroke', 'none')
+        d3.select(this).attr('stroke', 'black')
+        filtersunburstlabels(p.data.name, p);
     }
 
     function clicked(p) {
+        d3.selectAll(".outerLabels").attr('stroke', 'none')
         filtersunburstcategories(p.data.name);
         parent.datum(p.parent || root);
 
@@ -105,7 +109,7 @@ d3.json("./labels.json").then(function(data) {
         .attrTween("d", d => () => arc(d.current));
 
         label.filter(function(d) {
-            return +this.getAttribute("fill-opacity") || labelVisible(d.target);
+            return + this.getAttribute("fill-opacity") || labelVisible(d.target);
         }).transition(t)
         .attr("fill-opacity", d => +labelVisible(d.target))
         .attrTween("transform", d => () => labelTransform(d.current));

@@ -44,15 +44,12 @@ function intersect(a, b) {
     });
 }
 
-function filtersunburstlabels(name){
+function filtersunburstlabels(name, p){
     alt_coord = [];
 
     dots.selectAll('circle').each(function(d){
         if(JSON.parse(this.dataset.labels).indexOf(name.toLowerCase()) != -1){
-
             this.dataset.appear_in_filter = true;
-
-
         }
         else{
             this.dataset.appear_in_filter = false;
