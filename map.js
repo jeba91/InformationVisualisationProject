@@ -18,6 +18,13 @@ let scale_overall = 1;
 let title1 = "";
 let title2 = "";
 
+let description1 = "";
+let description2 = "";
+
+let views1 = 0;
+let views2 = 0;
+
+
 let labels_select = false;
 let lab1 = "[]";
 let lab2 = "[]";
@@ -227,7 +234,9 @@ function mouseoverCenter(d){
     let circle_most_views = d[2][max_views_index][4];
 
     if(!inCenterpoint & outCenterpoint){
-        let title = d3.select(circle_most_views).attr("data-categories");
+        let title = d3.select(circle_most_views).attr("data-title");
+        let description = d3.select(circle_most_views).attr("data-description");
+        let views = d3.select(circle_most_views).attr("data-views");
         if(d3.select(circle_most_views).attr('checked') == 'false'){
             d3.select(circle_most_views)
                 .attr("r", radius)
@@ -237,13 +246,17 @@ function mouseoverCenter(d){
         if(selectfirst){
             image1.transition().duration(200).style("opacity", .9);
             image1.html('<img src="' + url_most_views + '">');
-            image1.append("title").text(title).style("display", "block") 
+            image1.append("text").text("Title: " + title).style("display", "block");
+            image1.append("text").html("Description: " + description).style("display", "block");
+            image1.append("text").text("Views: " + views).style("display", "block");
         }
 
         else if(selectsecond){
             image2.transition().duration(200).style("opacity", .9);
             image2.html('<img src="' + url_most_views + '">');
-            image2.append("title").text(title).style("display", "block") 
+            image2.append("text").text("Title: " + title).style("display", "block");
+            image2.append("text").html("Description: " + description).style("display", "block");
+            image2.append("text").text("Views: " + views).style("display", "block");
         }
 
     }else if(inCenterpoint & !outCenterpoint){
@@ -260,8 +273,14 @@ function mouseoverCenter(d){
             selectsecond = true;
             selecturl1 = url_most_views;
             image1.html('<img src="' + selecturl1 + '">')
-            title1 = d3.select(circle_most_views).attr("data-categories");
-            image1.append("title").text(title1).style("display", "block")
+            title1 = d3.select(circle_most_views).attr("data-title");
+            description1 = d3.select(circle_most_views).attr("data-description");
+            views1 = d3.select(circle_most_views).attr("data-views");
+
+            image1.append("text").text("Title: " + title1).style("display", "block");
+            image1.append("text").html("Description: " + description1).style("display", "block");
+            image1.append("text").text("Views: " + views1).style("display", "block");
+
             lab1 = circle_most_views.dataset.labels;
             graph1 = circle_most_views;
         }else if(!selectfirst & selectsecond & d3.select(circle_most_views).attr('checked') == 'false'){
@@ -277,8 +296,13 @@ function mouseoverCenter(d){
             selectsecond = false;
             selecturl2 = url_most_views;
             image2.html('<img src="' + url_most_views + '">')
-            title2 = d3.select(circle_most_views).attr("data-categories")
-            image2.append("title").text(title2).style("display", "block")  
+            title2 = d3.select(circle_most_views).attr("data-title")
+            description2 = d3.select(circle_most_views).attr("data-description");
+            views2 = d3.select(circle_most_views).attr("data-views");
+
+            image2.append("text").text("Title: " + title2).style("display", "block");
+            image2.append("text").html("Description: " + description2).style("display", "block");
+            image2.append("text").text("Views: " + views2).style("display", "block");
             lab2 = circle_most_views.dataset.labels;
             graph2 = circle_most_views;
         }
@@ -314,12 +338,24 @@ function mouseoutCenter(d){
     if(selectfirst){
         image1.transition().duration(200).style("opacity", .9);
         image1.html('<img src="' + selecturl1 + '">');
-        image1.append("title").text(title1).style("display", "block")
+        title1 = d3.select(circle_most_views).attr("data-title");
+        description1 = d3.select(circle_most_views).attr("data-description");
+        views1 = d3.select(circle_most_views).attr("data-views");
+
+        image1.append("text").text("Title: " + title1).style("display", "block");
+        image1.append("text").html("Description: " + description1).style("display", "block");
+        image1.append("text").text("Views: " + views1).style("display", "block");
     }
     else if(selectsecond){
         image2.transition().duration(200).style("opacity", .9);
         image2.html('<img src="' + selecturl2 + '">');
-        image2.append("title").text(title2).style("display", "block") 
+        title2 = d3.select(circle_most_views).attr("data-title")
+        description2 = d3.select(circle_most_views).attr("data-description");
+        views2 = d3.select(circle_most_views).attr("data-views");
+
+        image2.append("text").text("Title: " + title2).style("display", "block");
+        image2.append("text").html("Description: " + description2).style("display", "block");
+        image2.append("text").text("Views: " + views2).style("display", "block");
     }
 
     d3.selectAll('circle[fill=red]')
@@ -380,6 +416,12 @@ function load_dots(){
                 })
                 .attr('data-labels', function(d){
                     return d['labels'];
+                })
+                .attr('data-title', function(d){
+                    return d['title'];
+                })
+                .attr('data-description', function(d){
+                    return d['description'];
                 })
                 .attr('data-categories', function(d){
                     return d['categories'];

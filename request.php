@@ -19,10 +19,11 @@
         $views = $row['views'];
         $categories = $row['categories'];
         $labels = $row['labels'];
+        $description = $row['description'];
 
         $url = 'http://farm' . $farm . '.staticflickr.com/' . $server . '/' . $photo_id . '_' . $secret . '.jpg';
 
-        $return_arr[] = array('id' => $id,'title' => $title, 'longitude' => $longitude, 'latitude' => $latitude, 'url' => $url, 'views' => $views, 'labels' => $labels, 'categories' => $categories);
+        $return_arr[] = array('id' => $id,'title' => $title, 'description' => $description, 'longitude' => $longitude, 'latitude' => $latitude, 'url' => $url, 'views' => $views, 'labels' => $labels, 'categories' => $categories);
     }
     header('Content-Type: application/json');
     echo json_encode($return_arr);
