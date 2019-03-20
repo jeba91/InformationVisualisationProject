@@ -172,9 +172,9 @@ function build_from_data(data){
            linearGradient.selectAll('stop')
              .data([
                  {offset: '20%', color: startColor },
-                 {offset: '40%', color: stopColor },
-                 {offset: '50%', color: startColor },
-                 {offset: '70%', color: stopColor }
+                 {offset: '50%', color: stopColor },
+                 {offset: '30%', color: startColor },
+                 {offset: '90%', color: stopColor }
                ])
              .enter().append('stop')
              .attr('offset', d => {
