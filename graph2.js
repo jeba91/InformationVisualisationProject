@@ -115,6 +115,8 @@ function build_from_data(data){
 
     graph_svg.selectAll('*').remove();
 
+    let defs = graph_svg.append('defs')
+
     let links = graph_svg.append("g")
         .selectAll("path")
         .data(graph.links)
@@ -123,8 +125,16 @@ function build_from_data(data){
         .attr("d", d3.sankeyLinkHorizontal())
         .attr("fill", "none")
         .attr("stroke", "#606060")
-        .attr("stroke-width", d => d.width)
-        .attr("stoke-opacity", 0.5);
+        .attr("stroke-width", d => d.width - 3)
+        .attr("stoke-opacity", 0.5)
+        .style('stroke-opacity', 0.40)
+        .on("mouseover", function() {
+                d3.select(this).style("stroke-opacity", "0.7")
+                })
+        .on("mouseout", function() {
+                d3.select(this).style("stroke-opacity", "0.4")
+        });
+
 
     let nodes = graph_svg.append("g")
         .selectAll("rect")
@@ -135,8 +145,47 @@ function build_from_data(data){
         .attr("y", d => d.y0)
         .attr("width", d => d.x1 - d.x0)
         .attr("height", d => d.y1 - d.y0)
-        .attr("fill", d => color(clean_text(d.id)))
+        .attr("fill", d => d.color = color(clean_text(d.id)))
+        .style("stroke", function(d){
+            return d3.rgb(d.color).darker(2)
+        })
         .attr("opacity", 0.8);
+
+        links.style('stroke', (d, i) => {
+           console.log('d from gradient stroke func', d);
+
+           // make unique gradient ids
+           const gradientID = i;
+           // const startColor = '#101010'
+           // const stopColor = '#888888'
+
+           const startColor = d.source.color
+           const stopColor = d.target.color
+
+           console.log('startColor', startColor);
+           console.log('stopColor', stopColor);
+
+           const linearGradient = defs.append('linearGradient')
+               .attr('id', gradientID);
+
+           linearGradient.selectAll('stop')
+             .data([
+                 {offset: '10%', color: startColor },
+                 {offset: '90%', color: stopColor }
+               ])
+             .enter().append('stop')
+             .attr('offset', d => {
+               console.log('d.offset', d.offset);
+               return d.offset;
+             })
+             .attr('stop-color', d => {
+               console.log('d.color', d.color);
+               return d.color;
+             });
+
+           return `url(#${gradientID})`;
+         })
+
 
     let text = graph_svg.append("g")
         .style("font", "10px sans-serif")
@@ -148,4 +197,10 @@ function build_from_data(data){
         .attr("dy", "0.35em")
         .attr("text-anchor", d => d.x0 < 500 / 2 ? "start" : "end")
         .text(d => clean_text(d.id));
+
+    // add gradient to links
+
+
+
+
 }
