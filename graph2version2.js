@@ -119,7 +119,6 @@ function build_graph(photo1, photo2){
     let categories1 = JSON.parse(photo1.dataset.categories);
     let labels1 = JSON.parse(photo1.dataset.labels);
     let label_indices = labels1.map(d => label_to_category[d]);
-    console.log("indices", label_indices)
     let labels_per_category = [];
     let category = []
 
@@ -131,13 +130,14 @@ function build_graph(photo1, photo2){
         labels_per_category.push(numOccurences);
     }
 
+    console.log("labels per category", labels_per_category)
+
     // check whether there is a label
     if (labels1.length == 0){
         data.nodes.push({id:"No Label1", type:"label1"});
         data.links.push({source: "Photo1", target: "No Label1", value: 1})
     }
 
-    console.log("labels", labels1)
     // for every label make connection to photo:
     labels1.forEach(function(d){
         console.log(label_to_category[d])
@@ -158,14 +158,12 @@ function build_graph(photo1, photo2){
     };
 
     if (photo2){
-        console.log("ojeohsdlfjsdlkfjdslkf")
+
 
         let categories2 = JSON.parse(photo2.dataset.categories);
         let labels2 = JSON.parse(photo2.dataset.labels);
         let label_indices2 = labels2.map(d => label_to_category[d]);
         let labels_per_category2 = [];
-
-        console.log("photo2:", labels2)
 
         for(var i = 0; i< categories2.length; i++){
             var category_index2 = categories2[i];
@@ -184,30 +182,26 @@ function build_graph(photo1, photo2){
                 data.links.push({source:"No Category" , target: "No Label2", value: 1});
             }else{
                 console.log("both dont have labels")
-                data.links.push({source: "No Category", target:"No Label2" , value: 1})
+                data.links.push({source: "No Category", target:"No Label2" , value: 1});
             }
         }
 
         labels2.forEach(function(d){
-            console.log("photo2" ,d)
             data.nodes.push({id: d+"2", type: "label2"} )
             data.links.push({source: d+"2", target:"Photo2", value:1})
 
             // make link to categorie for every label
-
             let current_cat = category_dict[label_to_category[d]]
             if (typeof category[current_cat] === 'undefined'){
                 data.nodes.push({id: current_cat, type:"category"})
             }
-            data.links.push({source:category_dict[label_to_category[d]], target: d + "2", value:1 })
+            data.links.push({source:category_dict[label_to_category[d]], target: d + "2", value:1} )
             category.push(category_dict[label_to_category[d]])
         });
 
 
 
     }
-    console.log(data)
-
     build_from_data(data)
 }
 
@@ -314,14 +308,14 @@ function build_from_data(data){
 
 
     let text = graph_svg.append("g")
-        .style("font", "10px sans-serif")
+        .style("font", "12px sans-serif")
         .selectAll("text")
         .data(graph.nodes)
         .join("text")
         .attr("x", d => d.x0 < 500 / 2 ? d.x1 + 6 : d.x0 - 6)
         .attr("y", d => (d.y1 + d.y0) / 2)
         .attr("dy", "0.35em")
-        .attr("text-anchor", d => d.x0 < 500 / 2 ? "start" : "end")
+        // .attr("text-anchor", d => d.x0 < 500 / 2 ? "start" : "end")
         .text(d => clean_text(d.id));
 
 
