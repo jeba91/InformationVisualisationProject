@@ -37,14 +37,29 @@ svg{
 	border: 4px ridge grey;
 }
 
+
+.next{
+    border:1px solid black;
+    display: block;
+    width: 100%;
+    line-height: 2em;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+}
+.next:hover {
+    color: red;
+    border-color: red;
+}
+
 .box4#photo1{
-    background-color:#0E5D7B;	
+    background-color:#0E5D7B;
     margin-top: 0px;
     background:radial-gradient(lightblue, white);
 }
 
 .box4#photo2{
-    background-color:#0E5D7B;	
+    background-color:#0E5D7B;
     margin-top: 0px;
     background:radial-gradient(lightgreen, white);
 }

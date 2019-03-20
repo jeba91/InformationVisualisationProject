@@ -1,3 +1,3 @@
 <?PHP
-    $link = mysqli_connect("localhost", "root", "", "flickr");
+    $link = mysqli_connect("localhost", "root", "root", "flickr");
 ?>
