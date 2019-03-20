@@ -31,15 +31,26 @@ function build_graph(photo1, photo2){
 
     let categories1 = JSON.parse(photo1.dataset.categories);
     let labels1 = JSON.parse(photo1.dataset.labels);
+    let label_indices = labels1.map(d => label_to_category[d]);
+
+    let labels_per_category = [];
+
+    for(var i = 0; i< categories1.length; i++){
+        var category_index = categories1[i];
+        var numOccurences = $.grep(label_indices, function (elem) {
+            return elem === category_index;
+        }).length;
+        labels_per_category.push(numOccurences);
+    }
 
     if(categories1.length == 0){
         data.nodes.push({id: "No Category1", type: "category1"});
         data.links.push({source: "Photo1", target: "No Category1", value: 1});
     }
 
-    categories1.forEach(function(d){
+    categories1.forEach(function(d, i){
         data.nodes.push({id: category_dict[d]+"1", type: "category1"});
-        data.links.push({source: "Photo1", target: category_dict[d]+"1", value: 1});
+        data.links.push({source: "Photo1", target: category_dict[d]+"1", value: labels_per_category[i]});
     });
 
     if(labels1.length == 0){
@@ -55,6 +66,17 @@ function build_graph(photo1, photo2){
     if(photo2){
         let categories2 = JSON.parse(photo2.dataset.categories);
         let labels2 = JSON.parse(photo2.dataset.labels);
+        let label_indices2 = labels2.map(d => label_to_category[d]);
+
+        let labels_per_category2 = [];
+
+        for(var i = 0; i< categories2.length; i++){
+            var category_index2 = categories2[i];
+            var numOccurences2 = $.grep(label_indices2, function (elem) {
+                return elem === category_index2;
+            }).length;
+            labels_per_category2.push(numOccurences2);
+        }
 
         if(labels2.length == 0 && labels1.length>0){
             data.nodes.push({id: "No Label", type: "label"});
@@ -73,9 +95,9 @@ function build_graph(photo1, photo2){
             data.links.push({source: "No Category2", target: "Photo2", value: 1});
         }
 
-        categories2.forEach(function(d){
+        categories2.forEach(function(d, i){
             data.nodes.push({id: category_dict[d]+"2", type: "category2"})
-            data.links.push({source: category_dict[d]+"2", target: "Photo2", value: 1});
+            data.links.push({source: category_dict[d]+"2", target: "Photo2", value: labels_per_category2[i]});
         });
     }
     console.log(data.links)
