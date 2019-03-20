@@ -130,10 +130,11 @@ let zoom = d3.zoom()
 
 // Translates map, dots, centers and texts on each move (translate and scale)
 function zoomed(){
-    radius = (-1/20*d3.event.transform.k + 1 + (1/20));
+    radius = 2*(-1/20*d3.event.transform.k + 1 + (1/20));
 
     map.attr('transform', d3.event.transform);
     dots.attr('transform', d3.event.transform);
+    dots.selectAll('circle').attr('r', radius);
     centers.attr('transform', d3.event.transform);
     centerTexts.attr('transform', d3.event.transform);
 
