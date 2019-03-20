@@ -486,9 +486,7 @@ function load_tree(x_offset, y_offset, scale){
         .attr("x", function(d) {return (d[0] - x_offset)/scale;})
         .attr("y", function(d) {return (d[1] - y_offset)/scale;})
         .style("text-anchor", "middle")
-        // .attr("font-size", function(d) { return Math.min(2 * d.r, (2 * d.r - 8) / this.getComputedTextLength() * 24) + "em"; })
-        // .attr("dominant-baseline", "central")
-        // .attr("font-size",  "0.5em");
+        .attr("dominant-baseline", "central")
         .attr("font-size", function(d){
             return fontLetters(d, scale);
         })
