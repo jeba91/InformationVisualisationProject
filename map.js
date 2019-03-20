@@ -276,11 +276,9 @@ function mouseoverCenter(d){
             title1 = d3.select(circle_most_views).attr("data-title");
             description1 = d3.select(circle_most_views).attr("data-description");
             views1 = d3.select(circle_most_views).attr("data-views");
-
             image1.append("text").text("Title: " + title1).style("display", "block");
             image1.append("text").html("Description: " + description1).style("display", "block");
             image1.append("text").text("Views: " + views1).style("display", "block");
-
             lab1 = circle_most_views.dataset.labels;
             graph1 = circle_most_views;
         }else if(!selectfirst & selectsecond & d3.select(circle_most_views).attr('checked') == 'false'){
@@ -299,7 +297,6 @@ function mouseoverCenter(d){
             title2 = d3.select(circle_most_views).attr("data-title")
             description2 = d3.select(circle_most_views).attr("data-description");
             views2 = d3.select(circle_most_views).attr("data-views");
-
             image2.append("text").text("Title: " + title2).style("display", "block");
             image2.append("text").html("Description: " + description2).style("display", "block");
             image2.append("text").text("Views: " + views2).style("display", "block");
@@ -338,10 +335,6 @@ function mouseoutCenter(d){
     if(selectfirst){
         image1.transition().duration(200).style("opacity", .9);
         image1.html('<img src="' + selecturl1 + '">');
-        title1 = d3.select(circle_most_views).attr("data-title");
-        description1 = d3.select(circle_most_views).attr("data-description");
-        views1 = d3.select(circle_most_views).attr("data-views");
-
         image1.append("text").text("Title: " + title1).style("display", "block");
         image1.append("text").html("Description: " + description1).style("display", "block");
         image1.append("text").text("Views: " + views1).style("display", "block");
@@ -349,10 +342,6 @@ function mouseoutCenter(d){
     else if(selectsecond){
         image2.transition().duration(200).style("opacity", .9);
         image2.html('<img src="' + selecturl2 + '">');
-        title2 = d3.select(circle_most_views).attr("data-title")
-        description2 = d3.select(circle_most_views).attr("data-description");
-        views2 = d3.select(circle_most_views).attr("data-views");
-
         image2.append("text").text("Title: " + title2).style("display", "block");
         image2.append("text").html("Description: " + description2).style("display", "block");
         image2.append("text").text("Views: " + views2).style("display", "block");
