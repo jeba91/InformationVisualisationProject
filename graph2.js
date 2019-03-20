@@ -78,11 +78,16 @@ function build_graph(photo1, photo2){
             data.links.push({source: category_dict[d]+"2", target: "Photo2", value: 1});
         });
     }
+    console.log(data.links)
 
     build_from_data(data);
 }
 
+
+
 function build_from_data(data){
+    console.log(data)
+
     let diagram_width = parseInt(d3.select("#chart svg").style('width').replace("px", ""))
     let sankey = d3.sankey().size([diagram_width, 490])
     .nodeId(d => d.id)
@@ -98,6 +103,7 @@ function build_from_data(data){
         if(d.type == "category1"){
             d.x0 = diagram_width*0.25;
             d.x1 = diagram_width*0.25 + 20;
+
         }
         if(d.type == "category2"){
             d.x0 = diagram_width*0.75;
@@ -125,9 +131,9 @@ function build_from_data(data){
         .attr("d", d3.sankeyLinkHorizontal())
         .attr("fill", "none")
         .attr("stroke", "#606060")
-        .attr("stroke-width", d => d.width - 3)
-        .attr("stoke-opacity", 0.5)
-        .style('stroke-opacity', 0.40)
+        .attr("stroke-width", function(d) {
+        return d.width - 5})
+        .attr("stroke-opacity", 0.4)
         .on("mouseover", function() {
                 d3.select(this).style("stroke-opacity", "0.7")
                 })
@@ -151,35 +157,30 @@ function build_from_data(data){
         })
         .attr("opacity", 0.8);
 
+
         links.style('stroke', (d, i) => {
-           console.log('d from gradient stroke func', d);
 
-           // make unique gradient ids
            const gradientID = i;
-           // const startColor = '#101010'
-           // const stopColor = '#888888'
-
            const startColor = d.source.color
            const stopColor = d.target.color
-
-           console.log('startColor', startColor);
-           console.log('stopColor', stopColor);
-
+           // const startColor = 'blue'
+           // const stopColor ='purple'
            const linearGradient = defs.append('linearGradient')
-               .attr('id', gradientID);
+               .attr('id', gradientID)
+               .attr("gradientUnits", "userSpaceOnUse");
 
            linearGradient.selectAll('stop')
              .data([
-                 {offset: '10%', color: startColor },
-                 {offset: '90%', color: stopColor }
+                 {offset: '20%', color: startColor },
+                 {offset: '40%', color: stopColor },
+                 {offset: '50%', color: startColor },
+                 {offset: '70%', color: stopColor }
                ])
              .enter().append('stop')
              .attr('offset', d => {
-               console.log('d.offset', d.offset);
                return d.offset;
              })
              .attr('stop-color', d => {
-               console.log('d.color', d.color);
                return d.color;
              });
 
@@ -194,13 +195,10 @@ function build_from_data(data){
         .join("text")
         .attr("x", d => d.x0 < 500 / 2 ? d.x1 + 6 : d.x0 - 6)
         .attr("y", d => (d.y1 + d.y0) / 2)
-        .attr("dy", "0.35em")
+        .attr("dy", "0.25em")
         .attr("text-anchor", d => d.x0 < 500 / 2 ? "start" : "end")
         .text(d => clean_text(d.id));
 
     // add gradient to links
-
-
-
 
 }
