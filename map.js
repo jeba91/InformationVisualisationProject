@@ -15,6 +15,9 @@ let translation_x = 0;
 let translation_y = 0;
 let scale_overall = 1;
 
+let title1 = "";
+let title2 = "";
+
 let labels_select = false;
 let lab1 = "[]";
 let lab2 = "[]";
@@ -175,10 +178,10 @@ let centerTexts = svg.append('g');
 let centers = svg.append('g');
 let image1 = d3.select('#photo1')
     .append('one')
-    .attr("class","img-fluid");
+    .attr("class", "img-fluid");
 let image2 = d3.select('#photo2')
     .append('two')
-    .attr("class","img-fluid");
+    .attr("class", "img-fluid")
 
 d3.select("#photo1").on("click", reselect);
 d3.select("#photo2").on("click", reselect);
@@ -224,6 +227,7 @@ function mouseoverCenter(d){
     let circle_most_views = d[2][max_views_index][4];
 
     if(!inCenterpoint & outCenterpoint){
+        let title = d3.select(circle_most_views).attr("data-categories");
         if(d3.select(circle_most_views).attr('checked') == 'false'){
             d3.select(circle_most_views)
                 .attr("r", radius)
@@ -233,12 +237,15 @@ function mouseoverCenter(d){
         if(selectfirst){
             image1.transition().duration(200).style("opacity", .9);
             image1.html('<img src="' + url_most_views + '">');
+            image1.append("title").text(title).style("display", "block") 
         }
 
         else if(selectsecond){
             image2.transition().duration(200).style("opacity", .9);
             image2.html('<img src="' + url_most_views + '">');
+            image2.append("title").text(title).style("display", "block") 
         }
+
     }else if(inCenterpoint & !outCenterpoint){
         if(selectfirst & !selectsecond & d3.select(circle_most_views).attr('checked') == 'false'){
             d3.selectAll('circle[fill=blue]')
@@ -253,6 +260,8 @@ function mouseoverCenter(d){
             selectsecond = true;
             selecturl1 = url_most_views;
             image1.html('<img src="' + selecturl1 + '">')
+            title1 = d3.select(circle_most_views).attr("data-categories");
+            image1.append("title").text(title1).style("display", "block")
             lab1 = circle_most_views.dataset.labels;
             graph1 = circle_most_views;
         }else if(!selectfirst & selectsecond & d3.select(circle_most_views).attr('checked') == 'false'){
@@ -268,6 +277,8 @@ function mouseoverCenter(d){
             selectsecond = false;
             selecturl2 = url_most_views;
             image2.html('<img src="' + url_most_views + '">')
+            title2 = d3.select(circle_most_views).attr("data-categories")
+            image2.append("title").text(title2).style("display", "block")  
             lab2 = circle_most_views.dataset.labels;
             graph2 = circle_most_views;
         }
@@ -303,10 +314,12 @@ function mouseoutCenter(d){
     if(selectfirst){
         image1.transition().duration(200).style("opacity", .9);
         image1.html('<img src="' + selecturl1 + '">');
+        image1.append("title").text(title1).style("display", "block")
     }
     else if(selectsecond){
         image2.transition().duration(200).style("opacity", .9);
         image2.html('<img src="' + selecturl2 + '">');
+        image2.append("title").text(title2).style("display", "block") 
     }
 
     d3.selectAll('circle[fill=red]')
@@ -473,9 +486,7 @@ function load_tree(x_offset, y_offset, scale){
         .attr("x", function(d) {return (d[0] - x_offset)/scale;})
         .attr("y", function(d) {return (d[1] - y_offset)/scale;})
         .style("text-anchor", "middle")
-        // .attr("font-size", function(d) { return Math.min(2 * d.r, (2 * d.r - 8) / this.getComputedTextLength() * 24) + "em"; })
-        // .attr("dominant-baseline", "central")
-        // .attr("font-size",  "0.5em");
+        .attr("dominant-baseline", "central")
         .attr("font-size", function(d){
             return fontLetters(d, scale);
         })
