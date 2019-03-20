@@ -132,7 +132,7 @@ function build_from_data(data){
         .attr("fill", "none")
         .attr("stroke", "#606060")
         .attr("stroke-width", function(d) {
-        return d.width - 5})
+        return d.width - 10})
         .attr("stroke-opacity", 0.4)
         .on("mouseover", function() {
                 d3.select(this).style("stroke-opacity", "0.7")
@@ -159,22 +159,22 @@ function build_from_data(data){
 
 
         links.style('stroke', (d, i) => {
-
            const gradientID = i;
            const startColor = d.source.color
            const stopColor = d.target.color
-           // const startColor = 'blue'
-           // const stopColor ='purple'
            const linearGradient = defs.append('linearGradient')
                .attr('id', gradientID)
                .attr("gradientUnits", "userSpaceOnUse");
 
            linearGradient.selectAll('stop')
              .data([
-                 {offset: '20%', color: startColor },
-                 {offset: '50%', color: stopColor },
-                 {offset: '30%', color: startColor },
-                 {offset: '90%', color: stopColor }
+                 {offset: '0%', color: startColor },
+                 {offset: '100%', color:stopColor}
+                 // {offset: '50%', color: stopColor },
+                 // {offset: '20%', color: startColor },
+                 // {offset: '50%', color: stopColor },
+                 // {offset: '30%', color: startColor },
+                 // {offset: '90%', color: stopColor }
                ])
              .enter().append('stop')
              .attr('offset', d => {
@@ -183,7 +183,6 @@ function build_from_data(data){
              .attr('stop-color', d => {
                return d.color;
              });
-
            return `url(#${gradientID})`;
          })
 
@@ -195,10 +194,9 @@ function build_from_data(data){
         .join("text")
         .attr("x", d => d.x0 < 500 / 2 ? d.x1 + 6 : d.x0 - 6)
         .attr("y", d => (d.y1 + d.y0) / 2)
-        .attr("dy", "0.25em")
+        .attr("dy", "0.35em")
         .attr("text-anchor", d => d.x0 < 500 / 2 ? "start" : "end")
         .text(d => clean_text(d.id));
 
-    // add gradient to links
 
 }
