@@ -78,11 +78,16 @@ function build_graph(photo1, photo2){
             data.links.push({source: category_dict[d]+"2", target: "Photo2", value: 1});
         });
     }
+    console.log(data.links)
 
     build_from_data(data);
 }
 
+
+
 function build_from_data(data){
+    console.log(data)
+
     let diagram_width = parseInt(d3.select("#chart svg").style('width').replace("px", ""))
     let sankey = d3.sankey().size([diagram_width, 490])
     .nodeId(d => d.id)
@@ -98,6 +103,7 @@ function build_from_data(data){
         if(d.type == "category1"){
             d.x0 = diagram_width*0.25;
             d.x1 = diagram_width*0.25 + 20;
+
         }
         if(d.type == "category2"){
             d.x0 = diagram_width*0.75;
@@ -115,6 +121,8 @@ function build_from_data(data){
 
     graph_svg.selectAll('*').remove();
 
+    let defs = graph_svg.append('defs')
+
     let links = graph_svg.append("g")
         .selectAll("path")
         .data(graph.links)
@@ -123,8 +131,16 @@ function build_from_data(data){
         .attr("d", d3.sankeyLinkHorizontal())
         .attr("fill", "none")
         .attr("stroke", "#606060")
-        .attr("stroke-width", d => d.width)
-        .attr("stoke-opacity", 0.5);
+        .attr("stroke-width", function(d) {
+        return d.width - 10})
+        .attr("stroke-opacity", 0.4)
+        .on("mouseover", function() {
+                d3.select(this).style("stroke-opacity", "0.7")
+                })
+        .on("mouseout", function() {
+                d3.select(this).style("stroke-opacity", "0.4")
+        });
+
 
     let nodes = graph_svg.append("g")
         .selectAll("rect")
@@ -135,8 +151,41 @@ function build_from_data(data){
         .attr("y", d => d.y0)
         .attr("width", d => d.x1 - d.x0)
         .attr("height", d => d.y1 - d.y0)
-        .attr("fill", d => color(clean_text(d.id)))
+        .attr("fill", d => d.color = color(clean_text(d.id)))
+        .style("stroke", function(d){
+            return d3.rgb(d.color).darker(2)
+        })
         .attr("opacity", 0.8);
+
+
+        links.style('stroke', (d, i) => {
+           const gradientID = i;
+           const startColor = d.source.color
+           const stopColor = d.target.color
+           const linearGradient = defs.append('linearGradient')
+               .attr('id', gradientID)
+               .attr("gradientUnits", "userSpaceOnUse");
+
+           linearGradient.selectAll('stop')
+             .data([
+                 {offset: '0%', color: startColor },
+                 {offset: '100%', color:stopColor}
+                 // {offset: '50%', color: stopColor },
+                 // {offset: '20%', color: startColor },
+                 // {offset: '50%', color: stopColor },
+                 // {offset: '30%', color: startColor },
+                 // {offset: '90%', color: stopColor }
+               ])
+             .enter().append('stop')
+             .attr('offset', d => {
+               return d.offset;
+             })
+             .attr('stop-color', d => {
+               return d.color;
+             });
+           return `url(#${gradientID})`;
+         })
+
 
     let text = graph_svg.append("g")
         .style("font", "10px sans-serif")
@@ -148,4 +197,6 @@ function build_from_data(data){
         .attr("dy", "0.35em")
         .attr("text-anchor", d => d.x0 < 500 / 2 ? "start" : "end")
         .text(d => clean_text(d.id));
+
+
 }
