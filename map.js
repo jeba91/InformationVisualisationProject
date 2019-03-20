@@ -535,6 +535,6 @@ function fontLetters(d, scale) {
         return biggest + "em";
     }
     else{
-        return font_size + "em";
+        return 0.75*font_size + "em";
     }
 }
