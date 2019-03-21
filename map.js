@@ -54,7 +54,7 @@ function changegraph(){
         document.getElementById('text-change').innerHTML = lab_sent;
         document.getElementById('change').innerHTML = button_title_cat;
     }else{
-        document.getElementById('text-change').innerHTML = cat_sent;    
+        document.getElementById('text-change').innerHTML = cat_sent;
         document.getElementById('change').innerHTML = button_title_lab;
     };
 
@@ -300,7 +300,15 @@ function mouseoverCenter(d){
             image1.append("text").html("<b>Title: </b>" + title).style("display", "block");
             image1.append("text").html("<b>Description: </b>" + description).style("display", "block");
             image1.append("text").html("<b>Views: </b>" + views).style("display", "block");
-            image1.append("text").html("<b>Views Top 3</b><ol><li>" + views_all[max_views_index[0]] + "</li><li>" + views_all[max_views_index[1]] + "</li><li>" + views_all[max_views_index[2]] + "</li></ol>").style("display", "block");
+            str = "";
+            for(let i =0; i<Math.min(max_views_index.length,3); i++){
+                if( views_all[max_views_index[i]]){
+                    str += "<li>" + views_all[max_views_index[i]] + "</li>";
+                }
+
+            }
+            image1.append("text").html("<b>Top views region</b><ol>" + str + "</li></ol>").style("display", "block");
+            //image1.append("text").html("<b>Views Top 3</b><ol><li>" + views_all[max_views_index[0]] + "</li><li>" + views_all[max_views_index[1]] + "</li><li>" + views_all[max_views_index[2]] + "</li></ol>").style("display", "block");
         }
 
         else if(selectsecond){
@@ -309,7 +317,14 @@ function mouseoverCenter(d){
             image2.append("text").html("<b>Title: </b>" + title).style("display", "block");
             image2.append("text").html("<b>Description: </b>" + description).style("display", "block");
             image2.append("text").html("<b>Views: </b>" + views).style("display", "block");
-            image2.append("text").html("<b>Views Top 3</b><ol><li>" + views_all[max_views_index[0]] + "</li><li>" + views_all[max_views_index[1]] + "</li><li>" + views_all[max_views_index[2]] + "</li></ol>").style("display", "block");
+            str = "";
+            for(let i =0; i<Math.min(max_views_index.length,3); i++){
+                if( views_all[max_views_index[i]]){
+                    str += "<li>" + views_all[max_views_index[i]] + "</li>";
+                }
+            }
+            image2.append("text").html("<b>Top views region</b><ol>" + str + "</li></ol>").style("display", "block");
+            //image2.append("text").html("<b>Views Top 3</b><ol><li>" + views_all[max_views_index[0]] + "</li><li>" + views_all[max_views_index[1]] + "</li><li>" + views_all[max_views_index[2]] + "</li></ol>").style("display", "block");
         }
 
     }else if(inCenterpoint & !outCenterpoint){
@@ -333,7 +348,18 @@ function mouseoverCenter(d){
             image1.append("text").html("<b>Title: </b>" + title1).style("display", "block");
             image1.append("text").html("<b>Description: </b>" + description1).style("display", "block");
             image1.append("text").html("<b>Views: </b>" + views1).style("display", "block");
-            image1.append("text").html("<b>Views Top 3</b><ol><li>" + views_all[max_views_index[0]] + "</li><li>" + views_all[max_views_index[1]] + "</li><li>" + views_all[max_views_index[2]] + "</li></ol>").style("display", "block");
+
+            str = "";
+            for(let i =0; i<Math.min(views31.length,3); i++){
+                if( views31[i]){
+                    str += "<li>" + views31[i] + "</li>";
+                }
+            }
+            image1.append("text").html("<b>Top views region</b><ol>" + str + "</li></ol>").style("display", "block");
+
+            //image1.append("text").html("<b>Views Top 3</b><ol><li>" + views_all[max_views_index[0]] + "</li><li>" + views_all[max_views_index[1]] + "</li><li>" + views_all[max_views_index[2]] + "</li></ol>").style("display", "block");
+
+
             lab1 = circle_most_views.dataset.labels;
             graph1 = circle_most_views;
         }else if(!selectfirst & selectsecond & d3.select(circle_most_views).attr('checked') == 'false'){
@@ -356,7 +382,16 @@ function mouseoverCenter(d){
             image2.append("text").html("<b>Title: </b>" + title2).style("display", "block");
             image2.append("text").html("<b>Description: </b>" + description2).style("display", "block");
             image2.append("text").html("<b>Views: </b>" + views2).style("display", "block");
-            image2.append("text").html("<b>Views Top 3</b><ol><li>" + views_all[max_views_index[0]] + "</li><li>" + views_all[max_views_index[1]] + "</li><li>" + views_all[max_views_index[2]] + "</li></ol>").style("display", "block");
+
+            str = "";
+            for(let i =0; i<Math.min(views32.length,3); i++){
+                if(views32[i]){
+                    str += "<li>" + views32[i] + "</li>";
+                }
+
+            }
+            image2.append("text").html("<b>Top views region</b><ol>" + str + "</li></ol>").style("display", "block");
+            //image2.append("text").html("<b>Views Top 3</b><ol><li>" + views_all[max_views_index[0]] + "</li><li>" + views_all[max_views_index[1]] + "</li><li>" + views_all[max_views_index[2]] + "</li></ol>").style("display", "block");
             lab2 = circle_most_views.dataset.labels;
             graph2 = circle_most_views;
         }
@@ -395,7 +430,14 @@ function mouseoutCenter(d){
         image1.append("text").html("<b>Title: </b>" + title1).style("display", "block");
         image1.append("text").html("<b>Description: </b>" + description1).style("display", "block");
         image1.append("text").html("<b>Views: </b>" + views1).style("display", "block");
-        image1.append("text").html("<b>Views Top 3</b><ol><li>" + views31[0] + "</li><li>" + views31[1] + "</li><li>" + views31[2] + "</li></ol>").style("display", "block");
+        str = "";
+        for(let i =0; i<Math.min(views31.length,3); i++){
+            if(views31[i]){
+                str += "<li>" + views31[i] + "</li>";
+            }
+
+        }
+        image1.append("text").html("<b>Top views region</b><ol>" + str + "</ol>").style("display", "block");
     }
     else if(selectsecond){
         image2.transition().duration(200).style("opacity", .9);
@@ -403,7 +445,14 @@ function mouseoutCenter(d){
         image2.append("text").html("<b>Title: </b>" + title2).style("display", "block");
         image2.append("text").html("<b>Description: </b>" + description2).style("display", "block");
         image2.append("text").html("<b>Views: </b>" + views2).style("display", "block");
-        image2.append("text").html("<b>Views Top 3</b><ol><li>" + views32[0] + "</li><li>" + views31[1] + "</li><li>" + views31[2] + "</li></ol>").style("display", "block");
+        str = "";
+        for(let i =0; i<<Math.min(views32.length,3); i++){
+            if(views32[i]){
+                str += "<li>" + views32[i] + "</li>";
+            }
+
+        }
+        image2.append("text").html("<b>Top views region</b><ol>" + str + "</li></ol>").style("display", "block");
     }
 
     d3.selectAll('circle[fill=red]')
