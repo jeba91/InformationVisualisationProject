@@ -22,17 +22,17 @@ function clean_text(txt){
     return txt;
 }
 
-function build_graph(photo1, photo2){
+function build_graph_cat_lab_cat(photo1, photo2){
 
     let data = {
-        nodes: [{id: "Photo1", type: "photo1"}, {id: "Photo2", type:"photo2"}],
+        nodes: [{id: "Photo1", type: "photo1"}],
         links: []
     }
 
     let categories1 = JSON.parse(photo1.dataset.categories);
     let labels1 = JSON.parse(photo1.dataset.labels);
     let label_indices = labels1.map(d => label_to_category[d]);
-
+    let labels_list = [];
     let labels_per_category = [];
 
     for(var i = 0; i< categories1.length; i++){
@@ -59,11 +59,17 @@ function build_graph(photo1, photo2){
     }
 
     labels1.forEach(function(d){
-        data.nodes.push({id: d, type: "label", category: category_dict[label_to_category[d]] + "1"});
+        data.nodes.push({id: d, type: "label"});
         data.links.push({source: category_dict[label_to_category[d]]+"1", target: d, value: 1});
+
+        if (labels_list.indexOf(d) == -1){
+            labels_list.push(d);
+        };
     });
 
     if(photo2){
+        data.nodes.push({id: "Photo2", type:"photo2"});
+
         let categories2 = JSON.parse(photo2.dataset.categories);
         let labels2 = JSON.parse(photo2.dataset.labels);
         let label_indices2 = labels2.map(d => label_to_category[d]);
@@ -86,7 +92,10 @@ function build_graph(photo1, photo2){
         }
 
         labels2.forEach(function(d){
-            data.nodes.push({id: d, type: "label", category: category_dict[label_to_category[d]]+"2"});
+            if (labels_list.indexOf(d) == -1){
+                labels_list.push(d);
+                data.nodes.push({id: d, type: "label"});
+            };
             data.links.push({source: d, target: category_dict[label_to_category[d]]+"2", value: 1});
         });
 
@@ -100,7 +109,6 @@ function build_graph(photo1, photo2){
             data.links.push({source: category_dict[d]+"2", target: "Photo2", value: labels_per_category2[i]});
         });
     }
-
     build_from_data(data);
 }
 

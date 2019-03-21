@@ -35,8 +35,20 @@ let lab2 = "[]";
 let graph1;
 let graph2;
 
+let sankey_function = "build_graph_cat";
 
 let radius = 0;
+
+function changegraph(){
+    if(sankey_function == "build_graph_cat"){
+        sankey_function = "build_graph_lab"
+    }else{
+        sankey_function = "build_graph_cat"
+    }
+
+    window[sankey_function](graph1, graph2)
+
+}
 
 
 function intersect(a, b) {
@@ -328,10 +340,10 @@ function mouseoverCenter(d){
         }
         // to make the graph
         if (labels_select == false){
-            build_graph(graph1, graph2)
+            window[sankey_function](graph1, graph2)
             labels_select = true;
         }else{
-            build_graph(graph1, graph2)
+            window[sankey_function](graph1, graph2)
         }
     }
 
