@@ -31,15 +31,26 @@ function build_graph(photo1, photo2){
 
     let categories1 = JSON.parse(photo1.dataset.categories);
     let labels1 = JSON.parse(photo1.dataset.labels);
+    let label_indices = labels1.map(d => label_to_category[d]);
+
+    let labels_per_category = [];
+
+    for(var i = 0; i< categories1.length; i++){
+        var category_index = categories1[i];
+        var numOccurences = $.grep(label_indices, function (elem) {
+            return elem === category_index;
+        }).length;
+        labels_per_category.push(numOccurences);
+    }
 
     if(categories1.length == 0){
         data.nodes.push({id: "No Category1", type: "category1"});
         data.links.push({source: "Photo1", target: "No Category1", value: 1});
     }
 
-    categories1.forEach(function(d){
+    categories1.forEach(function(d, i){
         data.nodes.push({id: category_dict[d]+"1", type: "category1"});
-        data.links.push({source: "Photo1", target: category_dict[d]+"1", value: 1});
+        data.links.push({source: "Photo1", target: category_dict[d]+"1", value: labels_per_category[i]});
     });
 
     if(labels1.length == 0){
@@ -55,6 +66,17 @@ function build_graph(photo1, photo2){
     if(photo2){
         let categories2 = JSON.parse(photo2.dataset.categories);
         let labels2 = JSON.parse(photo2.dataset.labels);
+        let label_indices2 = labels2.map(d => label_to_category[d]);
+
+        let labels_per_category2 = [];
+
+        for(var i = 0; i< categories2.length; i++){
+            var category_index2 = categories2[i];
+            var numOccurences2 = $.grep(label_indices2, function (elem) {
+                return elem === category_index2;
+            }).length;
+            labels_per_category2.push(numOccurences2);
+        }
 
         if(labels2.length == 0 && labels1.length>0){
             data.nodes.push({id: "No Label", type: "label"});
@@ -73,16 +95,21 @@ function build_graph(photo1, photo2){
             data.links.push({source: "No Category2", target: "Photo2", value: 1});
         }
 
-        categories2.forEach(function(d){
+        categories2.forEach(function(d, i){
             data.nodes.push({id: category_dict[d]+"2", type: "category2"})
-            data.links.push({source: category_dict[d]+"2", target: "Photo2", value: 1});
+            data.links.push({source: category_dict[d]+"2", target: "Photo2", value: labels_per_category2[i]});
         });
     }
+    console.log(data.links)
 
     build_from_data(data);
 }
 
+
+
 function build_from_data(data){
+    console.log(data)
+
     let diagram_width = parseInt(d3.select("#chart svg").style('width').replace("px", ""))
     let sankey = d3.sankey().size([diagram_width, 490])
     .nodeId(d => d.id)
@@ -98,6 +125,7 @@ function build_from_data(data){
         if(d.type == "category1"){
             d.x0 = diagram_width*0.25;
             d.x1 = diagram_width*0.25 + 20;
+
         }
         if(d.type == "category2"){
             d.x0 = diagram_width*0.75;
@@ -115,6 +143,8 @@ function build_from_data(data){
 
     graph_svg.selectAll('*').remove();
 
+    let defs = graph_svg.append('defs')
+
     let links = graph_svg.append("g")
         .selectAll("path")
         .data(graph.links)
@@ -123,8 +153,16 @@ function build_from_data(data){
         .attr("d", d3.sankeyLinkHorizontal())
         .attr("fill", "none")
         .attr("stroke", "#606060")
-        .attr("stroke-width", d => d.width)
-        .attr("stoke-opacity", 0.5);
+        .attr("stroke-width", function(d) {
+        return d.width - 10})
+        .attr("stroke-opacity", 0.4)
+        .on("mouseover", function() {
+                d3.select(this).style("stroke-opacity", "0.7")
+                })
+        .on("mouseout", function() {
+                d3.select(this).style("stroke-opacity", "0.4")
+        });
+
 
     let nodes = graph_svg.append("g")
         .selectAll("rect")
@@ -135,8 +173,46 @@ function build_from_data(data){
         .attr("y", d => d.y0)
         .attr("width", d => d.x1 - d.x0)
         .attr("height", d => d.y1 - d.y0)
-        .attr("fill", d => color(clean_text(d.id)))
-        .attr("opacity", 0.8);
+        .attr("fill", d => d.color = color(clean_text(d.id)))
+        .style("stroke", function(d){
+            return d3.rgb(d.color).darker(2)
+        })
+        .attr("opacity", 0.8)
+        .call(d3.drag().subject(function(d){return d})
+        .on('start', function(){
+            this.parentNode.appendChild(this)})
+        .on('drag', dragmove)
+        );
+
+
+        links.style('stroke', (d, i) => {
+           const gradientID = i;
+           const startColor = d.source.color
+           const stopColor = d.target.color
+           const linearGradient = defs.append('linearGradient')
+               .attr('id', gradientID)
+               .attr("gradientUnits", "userSpaceOnUse");
+
+           linearGradient.selectAll('stop')
+             .data([
+                 {offset: '0%', color: startColor },
+                 {offset: '100%', color:stopColor}
+                 // {offset: '50%', color: stopColor },
+                 // {offset: '20%', color: startColor },
+                 // {offset: '50%', color: stopColor },
+                 // {offset: '30%', color: startColor },
+                 // {offset: '90%', color: stopColor }
+               ])
+             .enter().append('stop')
+             .attr('offset', d => {
+               return d.offset;
+             })
+             .attr('stop-color', d => {
+               return d.color;
+             });
+           return `url(#${gradientID})`;
+         })
+
 
     let text = graph_svg.append("g")
         .style("font", "10px sans-serif")
@@ -148,4 +224,36 @@ function build_from_data(data){
         .attr("dy", "0.35em")
         .attr("text-anchor", d => d.x0 < 500 / 2 ? "start" : "end")
         .text(d => clean_text(d.id));
+
+        function dragmove(d){
+            var rectY = this.getAttribute('y');
+            var rectX = this.getAttribute('x');
+
+              d.y0 = d.y0 + d3.event.dy;
+              d.y1 = d.y1 + d3.event.dy;
+
+              d.x0 = d.x0 + d3.event.dx;
+              d.x1 = d.x1 + d3.event.dx;
+
+              var yTranslate = d.y0 - rectY;
+              var xTranslate = d.x0 - rectX;
+
+              d3.select(this).attr("transform",
+                        "translate(" + (xTranslate) + "," + (yTranslate) + ")");
+
+              sankey.update(graph);
+              links.attr("d",d3.sankeyLinkHorizontal());
+              text.remove()
+              text = graph_svg.append("g")
+                  .style("font", "10px sans-serif")
+                  .selectAll("text")
+                  .data(graph.nodes)
+                  .join("text")
+                  .attr("x", d => d.x0 < 500 / 2 ? d.x1 + 6 : d.x0 - 6)
+                  .attr("y", d => (d.y1 + d.y0) / 2)
+                  .attr("dy", "0.35em")
+                  .attr("text-anchor", d => d.x0 < 500 / 2 ? "start" : "end")
+                  .text(d => clean_text(d.id));
+        }
+
 }
