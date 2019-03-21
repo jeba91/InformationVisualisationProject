@@ -67,7 +67,6 @@ function build_graph_cat(photo1, photo2){
         data.nodes.push({id: "No Category", type: "category"});
         data.links.push({source:"No Label1" , target: "No Category", value: 1});
     }else{
-        console.log("list of categories", category)
         category.forEach(function(d){
             data.nodes.push({id:d, type:'category'})
         });
@@ -118,7 +117,6 @@ function build_graph_cat(photo1, photo2){
 
 
     }
-    console.log(data)
     build_from_data_cat(data)
 }
 
@@ -129,7 +127,6 @@ function build_graph_lab(photo1, photo2){
         nodes: [{id: "Photo1", type: "photo1"}],
         links: []
     }
-    console.log("JFEWFLSDLFKSDLKFDSLFKDS")
 
     let categories1 = JSON.parse(photo1.dataset.categories);
     let labels1 = JSON.parse(photo1.dataset.labels);
@@ -161,15 +158,12 @@ function build_graph_lab(photo1, photo2){
     }
 
     labels1.forEach(function(d){
-        console.log("hello", d)
         data.nodes.push({id: d, type: "label"});
         data.links.push({source: category_dict[label_to_category[d]]+"1", target: d, value: 1});
 
         if (labels_list.indexOf(d) == -1){
-            console.log("doet hij dit wel")
             labels_list.push(d);
         };
-        console.log("labels of photo1:", labels_list)
     });
 
     if(photo2){
@@ -214,7 +208,6 @@ function build_graph_lab(photo1, photo2){
             data.links.push({source: category_dict[d]+"2", target: "Photo2", value: labels_per_category2[i]});
         });
     }
-    console.log(data.links)
     build_from_data_lab(data);
 }
 
@@ -266,7 +259,7 @@ function build_from_data_cat(data){
         return d.width - 10})
         .attr("stroke-opacity", 0.4)
         .on("mouseover", function() {
-                d3.select(this).style("stroke-opacity", "0.9")
+                d3.select(this).style("stroke-opacity", "0.7")
                 })
         .on("mouseout", function() {
                 d3.select(this).style("stroke-opacity", "0.4")
@@ -287,9 +280,8 @@ function build_from_data_cat(data){
             return d3.rgb(d.color).darker(2)
         })
         .attr("opacity", 0.8)
-        .call(d3.drag().subject(function(d){ console.log("ik wil bewegen"); return d})
+        .call(d3.drag().subject(function(d){return d})
         .on('start', function(){
-             console.log("werkt dit?")
             this.parentNode.appendChild(this)})
         .on('drag', dragmove)
         );
@@ -326,7 +318,7 @@ function build_from_data_cat(data){
 
 
     let text = graph_svg.append("g")
-        .style("font", "12px sans-serif")
+        .style("font", "11px sans-serif")
         .selectAll("text")
         .data(graph.nodes)
         .join("text")
@@ -337,7 +329,6 @@ function build_from_data_cat(data){
         .text(d => clean_text(d.id));
 
         function dragmove(d){
-            console.log("mag ik bewegen?")
             var rectY = this.getAttribute('y');
             var rectX = this.getAttribute('x');
 
@@ -357,7 +348,7 @@ function build_from_data_cat(data){
               links.attr("d",d3.sankeyLinkHorizontal());
               text.remove()
               text = graph_svg.append("g")
-                  .style("font", "10px sans-serif")
+                  .style("font", "11px sans-serif")
                   .selectAll("text")
                   .data(graph.nodes)
                   .join("text")
@@ -370,8 +361,6 @@ function build_from_data_cat(data){
 }
 
 function build_from_data_lab(data){
-    console.log(data)
-
     let diagram_width = parseInt(d3.select("#chart svg").style('width').replace("px", ""))
     let sankey = d3.sankey().size([diagram_width, 490])
     .nodeId(d => d.id)
@@ -440,9 +429,8 @@ function build_from_data_lab(data){
             return d3.rgb(d.color).darker(2)
         })
         .attr("opacity", 0.8)
-        .call(d3.drag().subject(function(d){ console.log("ik wil bewegen"); return d})
+        .call(d3.drag().subject(function(d){return d})
         .on('start', function(){
-             console.log("werkt dit?")
             this.parentNode.appendChild(this)})
         .on('drag', dragmove)
         );
@@ -490,7 +478,6 @@ function build_from_data_lab(data){
         .text(d => clean_text(d.id));
 
         function dragmove(d){
-            console.log("mag ik bewegen?")
             var rectY = this.getAttribute('y');
             var rectX = this.getAttribute('x');
 
