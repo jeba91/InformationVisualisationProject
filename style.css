@@ -80,3 +80,11 @@ button#change{
 button#change:hover{
     background-color: lightblue;
 }
+
+p{
+ font-size:0.75rem
+}
+
+li{
+ font-size:0.7rem
+}

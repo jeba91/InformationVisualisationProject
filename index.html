@@ -17,33 +17,42 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     </head>
     <body>
-        <div class="box1 col-12" id = "title">
-            FlICKR Photo searching
-        </div>
         <div class="container-fluid">
             <div class="row" id="first-row">
-                <div class="box1 col-9" id="worldmap"></div>
-                <div class="box2 col-3" id="labelselector"></div>
-            </div>
-            <div class="row" id="first-row">
-                <div class="box4 col-2" id="photo1"></div>
-
-                <div class="box3 col-8" >
-                <div class="row" >
-                        <button class = "col-4" id = "change" onclick="changegraph()"> Change graph </button>
-                        <p class = "col-4" id="text-change" value= "change" > Select photo to show graph</p>
+                <div class="box1 col-12">
+                    <div> <a href="visualization.html" class = "next">Continue</a></div>
                 </div>
-
-                    <div class = col-12 id = "chart">
-                    </div>
-
+            <div class="row" id="second-row">
+                <div class="box1 col-3">
+                    <p>
+                        Welcome to the interactive visualization of a dataset of photos from flickr. This visualization let's you pick photographs from their geographic location. Then a common ground between these photo's is shown in graph that is drawn after making your choices. This graph shows how through the labels the common categories are depicted or how through the categories the common labels are depicted. Underneath are a couple of examples on why and how this is usefull and what this visualization can bring you, although it is also for every other person interested in flickr photos and their relations. 
+                    </p>
+                    <ol type="1">
+                        <li>If for example you are a social media influencer and wants to increase your views and social reach. To do so, you want to explore possibilities of adding more hashtags. These hashtags and categories can be searched in our visualization. By searching two differents photos with similar characteristics you can oversee the common tags or categories and use this for his new hashtags or as inspiration for your posts. With the statistics of the photo’s added you can also see the views of the photos on flickr and the potential. Furthermore, locations with more views and new possible hotspots for your new posts can also be discovered. </li>
+                        <li>Or, for example you are a flickr user and want to add categories or tags to your photos but being new to the photography field you have no clue how to properly describe your photo. With the sunburst filter option you can select categories where you thinks your photo belongs to, search the map for similar photos and get inspiration for categories/labels/tags.</li>
+                        <li>Or, as a experencied user wants to search for hotspots for new photo locations, searching your favorite category or tag you can compare two hotspots and the views. The statistics of the geography show the comparison between the hotspots and the labels and tags show you if the photos are describing your favorite subjects.</li>
+                    </ol>
                 </div>
-
-                <div class="box4 col-2" id="photo2"></div>
+                <div class="box1 col-6">
+                    <img src="example.png" style="height:80%;width:80%">
+                </div>
+                <div class="box1 col-3">
+                    <p>
+                        Underneath is shown what the function of every part of the visualization is, the numbers in the list can be found to the left on the image describing for numbered parts how this works and what can be done.
+                    </p>
+                    <ol type="1">
+                        <li>World map displaying flickr photos and their geographic locations. Locations with a dense grid of photos are aggregated and on hover or click show the photo with the most views.</li>
+                        <li>Sunburst visualization to filter the world map photos. The first layer is the categories and the second layer the tags for the chosen category.</li>
+                        <li>Photo 1, shown as an green dot on the map, which is the exact location taken from the aggregated photos. Furthermore are the descriptions shown underneath the photos</li>
+                        <li>Photo 2, shown as an blue dot on the map, which is the exact location taken from the aggregated photos. Furthermore are the descriptions shown underneath the photos</li>
+                        <li>Sankey diagram showing the relationship between the two clicked photos. The first layer from left or right are the categories of the photos. The second layer is tags of both photos, the common tags have a connection comming from left and right.</li>
+                    </ol>
+                </div>
+                
             </div>
         </div>
     </body>
     <script src="./map.js"></script>
-    <script src="./graph2version2.js"></script>
+    <script src="./graph2.js"></script>
     <script src="./sunburst.js"></script>
 </html>
