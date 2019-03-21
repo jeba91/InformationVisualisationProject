@@ -59,15 +59,12 @@ function intersect(a, b) {
     });
 }
 
-function filtersunburstlabels(name){
+function filtersunburstlabels(name, p){
     alt_coord = [];
 
     dots.selectAll('circle').each(function(d){
         if(JSON.parse(this.dataset.labels).indexOf(name.toLowerCase()) != -1){
-
             this.dataset.appear_in_filter = true;
-
-
         }
         else{
             this.dataset.appear_in_filter = false;
@@ -572,6 +569,6 @@ function fontLetters(d, scale) {
         return biggest + "em";
     }
     else{
-        return font_size + "em";
+        return 0.75*font_size + "em";
     }
 }

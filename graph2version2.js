@@ -129,6 +129,7 @@ function build_graph_lab(photo1, photo2){
         nodes: [{id: "Photo1", type: "photo1"}],
         links: []
     }
+    console.log("JFEWFLSDLFKSDLKFDSLFKDS")
 
     let categories1 = JSON.parse(photo1.dataset.categories);
     let labels1 = JSON.parse(photo1.dataset.labels);
@@ -438,7 +439,14 @@ function build_from_data_lab(data){
         .style("stroke", function(d){
             return d3.rgb(d.color).darker(2)
         })
-        .attr("opacity", 0.8);
+        .attr("opacity", 0.8)
+        .call(d3.drag().subject(function(d){ console.log("ik wil bewegen"); return d})
+        .on('start', function(){
+             console.log("werkt dit?")
+            this.parentNode.appendChild(this)})
+        .on('drag', dragmove)
+        );
+
 
 
         links.style('stroke', (d, i) => {
@@ -481,5 +489,35 @@ function build_from_data_lab(data){
         .attr("text-anchor", d => d.x0 < 500 / 2 ? "start" : "end")
         .text(d => clean_text(d.id));
 
+        function dragmove(d){
+            console.log("mag ik bewegen?")
+            var rectY = this.getAttribute('y');
+            var rectX = this.getAttribute('x');
 
+              d.y0 = d.y0 + d3.event.dy;
+              d.y1 = d.y1 + d3.event.dy;
+
+              d.x0 = d.x0 + d3.event.dx;
+              d.x1 = d.x1 + d3.event.dx;
+
+              var yTranslate = d.y0 - rectY;
+              var xTranslate = d.x0 - rectX;
+
+              d3.select(this).attr("transform",
+                        "translate(" + (xTranslate) + "," + (yTranslate) + ")");
+
+              sankey.update(graph);
+              links.attr("d",d3.sankeyLinkHorizontal());
+              text.remove()
+              text = graph_svg.append("g")
+                  .style("font", "10px sans-serif")
+                  .selectAll("text")
+                  .data(graph.nodes)
+                  .join("text")
+                  .attr("x", d => d.x0 < 500 / 2 ? d.x1 + 6 : d.x0 - 6)
+                  .attr("y", d => (d.y1 + d.y0) / 2)
+                  .attr("dy", "0.35em")
+                  .attr("text-anchor", d => d.x0 < 500 / 2 ? "start" : "end")
+                  .text(d => clean_text(d.id));
+        }
 }

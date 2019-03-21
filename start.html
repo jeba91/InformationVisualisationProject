@@ -18,24 +18,27 @@
     </head>
     <body>
         <div class="container-fluid">
-            <div class = "row" id = "first-row">
+            <div class="row" id="first-row">
                 <div class="box1 col-12">
-                    <div> <a href="start.html" class = "next">previous</a></div>
+                    <div> <a href="index.html" class = "next">Continue</a></div>
                 </div>
-            </div>
-            <div class="row" id="first-row">
-                <div class="box1 col-9" id="worldmap"></div>
-                <div class="box2 col-3" id="labelselector"></div>
-            </div>
-            <div class="row" id="first-row">
-                <div class="box4 col-2" id="photo1"></div>
-                <div class="box3 col-8" id="chart">
-                    <button onclick="changegraph()"> Change graph </button></div>
-                <div class="box4 col-2" id="photo2"></div>
+            <div class="row" id="second-row">
+                <div class="box1 col-4">
+                    <ol type="1">
+                        <li>World map displaying flickr photos and their geographic locations. Locations with a dense grid of photos are aggregated and on hover or click show the photo with the most views.</li>
+                        <li>Sunburst visualization to filter the world map photos. The first layer is the categories and the second layer the tags for the chosen category.</li>
+                        <li>Photo 1, shown as an green dot on the map, which is the exact location taken from the aggregated photos. Furthermore are the descriptions shown underneath the photos</li>
+                        <li>Photo 2, shown as an blue dot on the map, which is the exact location taken from the aggregated photos. Furthermore are the descriptions shown underneath the photos</li>
+                        <li>Sankey diagram showing the relationship between the two clicked photos. The first layer from left or right are the categories of the photos. The second layer is tags of both photos, the common tags have a connection comming from left and right.</li>
+                    </ol>
+                </div>
+                <div class="box1 col-8">
+                    <img src="example.png" style="width:500px;height:200px;">
+                </div>
             </div>
         </div>
     </body>
     <script src="./map.js"></script>
-    <script src="./graph2version2.js"></script>
+    <script src="./graph2.js"></script>
     <script src="./sunburst.js"></script>
 </html>

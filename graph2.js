@@ -54,20 +54,17 @@ function build_graph_cat_lab_cat(photo1, photo2){
     });
 
     if(labels1.length == 0){
-        data.nodes.push({id: "No Label", type: "label"});
+        data.nodes.push({id: "No Label", type: "label", category: "No Category1"});
         data.links.push({source: "No Category1", target: "No Label", value: 1})
     }
 
     labels1.forEach(function(d){
-        console.log("hello", d)
         data.nodes.push({id: d, type: "label"});
         data.links.push({source: category_dict[label_to_category[d]]+"1", target: d, value: 1});
 
         if (labels_list.indexOf(d) == -1){
-            console.log("doet hij dit wel")
             labels_list.push(d);
         };
-        console.log("labels of photo1:", labels_list)
     });
 
     if(photo2){
@@ -88,7 +85,7 @@ function build_graph_cat_lab_cat(photo1, photo2){
         }
 
         if(labels2.length == 0 && labels1.length>0){
-            data.nodes.push({id: "No Label", type: "label"});
+            data.nodes.push({id: "No Label", type: "label", category: "No Category2"});
         }
         if(labels2.length == 0){
             data.links.push({source: "No Label", target: "No Category2", value: 1})
@@ -112,15 +109,12 @@ function build_graph_cat_lab_cat(photo1, photo2){
             data.links.push({source: category_dict[d]+"2", target: "Photo2", value: labels_per_category2[i]});
         });
     }
-    console.log(data.links)
     build_from_data(data);
 }
 
 
 
 function build_from_data(data){
-    console.log(data)
-
     let diagram_width = parseInt(d3.select("#chart svg").style('width').replace("px", ""))
     let sankey = d3.sankey().size([diagram_width, 490])
     .nodeId(d => d.id)
@@ -129,8 +123,6 @@ function build_from_data(data){
     .nodeAlign(d3.sankeyCenter);
 
     let graph = sankey(data);
-
-
 
     graph.nodes.forEach(function(d){
         if(d.type == "category1"){
@@ -174,7 +166,6 @@ function build_from_data(data){
                 d3.select(this).style("stroke-opacity", "0.4")
         });
 
-
     let nodes = graph_svg.append("g")
         .selectAll("rect")
         .data(graph.nodes)
@@ -184,11 +175,33 @@ function build_from_data(data){
         .attr("y", d => d.y0)
         .attr("width", d => d.x1 - d.x0)
         .attr("height", d => d.y1 - d.y0)
-        .attr("fill", d => d.color = color(clean_text(d.id)))
+        .attr("fill", function(d){
+
+            if(d.type=='label'){
+                d.color = color(clean_text(d.category));
+                labelcolour = color(clean_text(d.id));
+                c = d3.color(d.color);
+                clabel = d3.color(labelcolour);
+                c.r += parseInt((clabel.r - 128)/2);
+                c.g += parseInt((clabel.g - 128)/2);
+                c.b += parseInt((clabel.b - 128)/2);
+                d.color = c.toString();
+                return d.color;
+             }
+             else{
+                 d.color = color(clean_text(d.id));
+                 return d.color;
+             }
+        })
         .style("stroke", function(d){
             return d3.rgb(d.color).darker(2)
         })
-        .attr("opacity", 0.8);
+        .attr("opacity", 0.8)
+        .call(d3.drag().subject(function(d){return d})
+        .on('start', function(){
+            this.parentNode.appendChild(this)})
+        .on('drag', dragmove)
+        );
 
 
         links.style('stroke', (d, i) => {
@@ -231,5 +244,35 @@ function build_from_data(data){
         .attr("text-anchor", d => d.x0 < 500 / 2 ? "start" : "end")
         .text(d => clean_text(d.id));
 
+function dragmove(d){
+    var rectY = this.getAttribute('y');
+    var rectX = this.getAttribute('x');
+
+      d.y0 = d.y0 + d3.event.dy;
+      d.y1 = d.y1 + d3.event.dy;
+
+      d.x0 = d.x0 + d3.event.dx;
+      d.x1 = d.x1 + d3.event.dx;
+
+      var yTranslate = d.y0 - rectY;
+      var xTranslate = d.x0 - rectX;
+
+      d3.select(this).attr("transform",
+                "translate(" + (xTranslate) + "," + (yTranslate) + ")");
+
+      sankey.update(graph);
+      links.attr("d",d3.sankeyLinkHorizontal());
+      text.remove()
+      text = graph_svg.append("g")
+          .style("font", "10px sans-serif")
+          .selectAll("text")
+          .data(graph.nodes)
+          .join("text")
+          .attr("x", d => d.x0 < 500 / 2 ? d.x1 + 6 : d.x0 - 6)
+          .attr("y", d => (d.y1 + d.y0) / 2)
+          .attr("dy", "0.35em")
+          .attr("text-anchor", d => d.x0 < 500 / 2 ? "start" : "end")
+          .text(d => clean_text(d.id));
+}
 
 }
