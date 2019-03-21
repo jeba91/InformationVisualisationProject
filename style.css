@@ -63,3 +63,20 @@ svg{
     margin-top: 0px;
     background:radial-gradient(lightgreen, white);
 }
+.col-12#title{
+    background-color: #222222;
+    color:white;
+    text-align: center;
+}
+#infobar{
+    border:none;
+
+}
+button#change{
+    background:lightgrey;
+    margin-bottom: 10px;
+    /* right:0 */
+}
+button#change:hover{
+    background-color: lightblue;
+}

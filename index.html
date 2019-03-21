@@ -17,6 +17,9 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     </head>
     <body>
+        <div class="box1 col-12" id = "title">
+            FlICKR Photo searching
+        </div>
         <div class="container-fluid">
             <div class="row" id="first-row">
                 <div class="box1 col-9" id="worldmap"></div>
@@ -24,8 +27,18 @@
             </div>
             <div class="row" id="first-row">
                 <div class="box4 col-2" id="photo1"></div>
-                <div class="box3 col-8" id="chart">
-                    <button onclick="changegraph()"> Change graph </button></div>
+
+                <div class="box3 col-8" >
+                <div class="row" >
+                        <button class = "col-4" id = "change" onclick="changegraph()"> Change graph </button>
+                        <p class = "col-4" id="text-change" value= "change" > Select photo to show graph</p>
+                </div>
+
+                    <div class = col-12 id = "chart">
+                    </div>
+
+                </div>
+
                 <div class="box4 col-2" id="photo2"></div>
             </div>
         </div>

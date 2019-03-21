@@ -28,7 +28,7 @@ let views1 = 0;
 let views2 = 0;
 let views31 = [];
 let views32 = [];
-
+let categories = true;
 
 let labels_select = false;
 let lab1 = "[]";
@@ -41,15 +41,21 @@ let sankey_function = "build_graph_cat";
 
 let radius = 0;
 
+$("#change").hide()
+
 function changegraph(){
+    if ( document.getElementById('text-change').innerHTML == "Similarities between categories"){
+        document.getElementById('text-change').innerHTML = "Similarities between labels";
+    }else{
+        document.getElementById('text-change').innerHTML = "Similarities between categories";
+    };
+
     if(sankey_function == "build_graph_cat"){
         sankey_function = "build_graph_lab"
     }else{
         sankey_function = "build_graph_cat"
     }
-
     window[sankey_function](graph1, graph2)
-
 }
 
 
