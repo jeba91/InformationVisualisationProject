@@ -73,12 +73,24 @@ svg{
 
 }
 button#change{
-    background:lightgrey;
+    margin: 10px;
+    background:#222222;
+    border-radius: 2px;
+    color:white;
     margin-bottom: 10px;
+    font-size:12px;
+    height:30   px;
+    width:100px;
     /* right:0 */
 }
 button#change:hover{
-    background-color: lightblue;
+    opacity: 0.3
+    /* background-color: lightblue; */
+}
+
+p#text-change{
+    margin: 10px;
+    font-size:18px;
 }
 
 p{
