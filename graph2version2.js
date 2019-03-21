@@ -3,6 +3,10 @@ let graph_svg = d3.select("#chart").append('svg')
 .attr('height', 500)
 .append("g")
 
+d3.select("#photo1").style('height', d3.select('#sankeydiagram').style('height'));
+
+d3.select("#photo2").style('height', d3.select('#sankeydiagram').style('height'));
+
 let category_dict = ["Animal", "Sports", "Nature", "Cultural", "Object", "Landscape", "Urban", "Vehicle", "Emotions", "People", "Sky", "Architecture", "Weather/Seasons"];
 let label_to_category;
 $.getJSON('./label_to_category.json', function(data) {
@@ -20,7 +24,6 @@ function clean_text(txt){
     txt = txt.join(' ');
     return txt;
 }
-
 
 function build_graph_cat(photo1, photo2){
     var x = document.getElementById("change");
