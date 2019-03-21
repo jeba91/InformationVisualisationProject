@@ -3,7 +3,6 @@ let graph_svg = d3.select("#chart").append('svg')
 .attr('height', 500)
 .append("g")
 
-
 let category_dict = ["Animal", "Sports", "Nature", "Cultural", "Object", "Landscape", "Urban", "Vehicle", "Emotions", "People", "Sky", "Architecture", "Weather/Seasons"];
 let label_to_category;
 $.getJSON('./label_to_category.json', function(data) {
@@ -24,6 +23,15 @@ function clean_text(txt){
 
 
 function build_graph_cat(photo1, photo2){
+    var x = document.getElementById("change");
+    console.log(x)
+    if (x.style.display === "none") {
+        x.style.display = "block";
+        document.getElementById('text-change').innerHTML = "Similarities between categories";
+    }
+
+
+
     let data = {
         nodes: [{id: "Photo1", type: "photo1"}],
         links: []
@@ -122,6 +130,13 @@ function build_graph_cat(photo1, photo2){
 
 
 function build_graph_lab(photo1, photo2){
+    var x = document.getElementById("change");
+    console.log(x)
+    if (x.style.display === "none") {
+        x.style.display = "block";
+        document.getElementById('text-change').innerHTML = "Show similarities between categories";
+
+    }
 
     let data = {
         nodes: [{id: "Photo1", type: "photo1"}],
@@ -213,6 +228,7 @@ function build_graph_lab(photo1, photo2){
 
 
 function build_from_data_cat(data){
+
 
     let diagram_width = parseInt(d3.select("#chart svg").style('width').replace("px", ""))
     let sankey = d3.sankey().size([diagram_width, 490])
@@ -361,6 +377,8 @@ function build_from_data_cat(data){
 }
 
 function build_from_data_lab(data){
+
+
     let diagram_width = parseInt(d3.select("#chart svg").style('width').replace("px", ""))
     let sankey = d3.sankey().size([diagram_width, 490])
     .nodeId(d => d.id)
