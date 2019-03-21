@@ -22,98 +22,12 @@ function clean_text(txt){
     return txt;
 }
 
-function build_graph2(photo1, photo2){
-
-    let data = {
-        nodes: [{id: "Photo1", type: "photo1"}, {id: "Photo2", type:"photo2"}],
-        links: []
-    }
-
-    let categories1 = JSON.parse(photo1.dataset.categories);
-    let labels1 = JSON.parse(photo1.dataset.labels);
-    let label_indices = labels1.map(d => label_to_category[d]);
-
-    let labels_per_category = [];
-
-    for(var i = 0; i< categories1.length; i++){
-        var category_index = categories1[i];
-        var numOccurences = $.grep(label_indices, function (elem) {
-            return elem === category_index;
-        }).length;
-        labels_per_category.push(numOccurences);
-    }
-
-    if(categories1.length == 0){
-        data.nodes.push({id: "No Category1", type: "category1"});
-        data.links.push({source: "Photo1", target: "No Category1", value: 1});
-    }
-
-    categories1.forEach(function(d, i){
-        data.nodes.push({id: category_dict[d]+"1", type: "category1"});
-        data.links.push({source: "Photo1", target: category_dict[d]+"1", value: labels_per_category[i]});
-    });
-
-    if(labels1.length == 0){
-        data.nodes.push({id: "No Label", type: "label"});
-        data.links.push({source: "No Category1", target: "No Label", value: 1})
-    }
-
-    labels1.forEach(function(d){
-        data.nodes.push({id: d, type: "label"});
-        data.links.push({source: category_dict[label_to_category[d]]+"1", target: d, value: 1});
-    });
-
-    if(photo2){
-        let categories2 = JSON.parse(photo2.dataset.categories);
-        let labels2 = JSON.parse(photo2.dataset.labels);
-        let label_indices2 = labels2.map(d => label_to_category[d]);
-
-        let labels_per_category2 = [];
-
-        for(var i = 0; i< categories2.length; i++){
-            var category_index2 = categories2[i];
-            var numOccurences2 = $.grep(label_indices2, function (elem) {
-                return elem === category_index2;
-            }).length;
-            labels_per_category2.push(numOccurences2);
-        }
-
-        if(labels2.length == 0 && labels1.length>0){
-            data.nodes.push({id: "No Label", type: "label"});
-        }
-        if(labels2.length == 0){
-            data.links.push({source: "No Label", target: "No Category2", value: 1})
-        }
-
-        labels2.forEach(function(d){
-            data.nodes.push({id: d, type: "label"});
-            data.links.push({source: d, target: category_dict[label_to_category[d]]+"2", value: 1});
-        });
-
-        if(categories2.length == 0){
-            data.nodes.push({id: "No Category2", type: "category2"})
-            data.links.push({source: "No Category2", target: "Photo2", value: 1});
-        }
-
-        categories2.forEach(function(d, i){
-            data.nodes.push({id: category_dict[d]+"2", type: "category2"})
-            data.links.push({source: category_dict[d]+"2", target: "Photo2", value: labels_per_category2[i]});
-        });
-    }
-    console.log(data.links)
-
-    build_from_data(data);
-
-}
-
-
-
-
 function build_graph(photo1, photo2){
     let data = {
-        nodes: [{id: "Photo1", type: "photo1"}, {id: "Photo2", type:"photo2"}],
+        nodes: [{id: "Photo1", type: "photo1"}],
         links: []
     }
+    console.log("JFEWFLSDLFKSDLKFDSLFKDS")
 
     // when one foto is selected
     let categories1 = JSON.parse(photo1.dataset.categories);
@@ -130,8 +44,6 @@ function build_graph(photo1, photo2){
         labels_per_category.push(numOccurences);
     }
 
-    console.log("labels per category", labels_per_category)
-
     // check whether there is a label
     if (labels1.length == 0){
         data.nodes.push({id:"No Label1", type:"label1"});
@@ -140,24 +52,29 @@ function build_graph(photo1, photo2){
 
     // for every label make connection to photo:
     labels1.forEach(function(d){
-        console.log(label_to_category[d])
         data.nodes.push({id: d + "1", type: "label1"});
         data.links.push({source: "Photo1", target: d+"1", value: 1});
 
         // make link to categorie for every label
         data.links.push({source:d + "1", target:category_dict[label_to_category[d]], value:1 })
-        category.push(category_dict[label_to_category[d]])
+        if (category.indexOf(category_dict[label_to_category[d]])== -1){
+            console.log("voeg dit toe:", category_dict[label_to_category[d]])
+            category.push(category_dict[label_to_category[d]])
+        }
     });
+
     if(category.length == 0){
         data.nodes.push({id: "No Category", type: "category"});
         data.links.push({source:"No Label1" , target: "No Category", value: 1});
     }else{
+        console.log("list of categories", category)
         category.forEach(function(d){
             data.nodes.push({id:d, type:'category'})
         });
     };
 
     if (photo2){
+        data.nodes.push({id: "Photo2", type:"photo2"})
 
 
         let categories2 = JSON.parse(photo2.dataset.categories);
@@ -181,7 +98,6 @@ function build_graph(photo1, photo2){
                 data.nodes.push({id: "No Category", type: "category"});
                 data.links.push({source:"No Category" , target: "No Label2", value: 1});
             }else{
-                console.log("both dont have labels")
                 data.links.push({source: "No Category", target:"No Label2" , value: 1});
             }
         }
@@ -192,7 +108,8 @@ function build_graph(photo1, photo2){
 
             // make link to categorie for every label
             let current_cat = category_dict[label_to_category[d]]
-            if (typeof category[current_cat] === 'undefined'){
+            if (category.indexOf(current_cat) == -1){
+                console.log(current_cat)
                 data.nodes.push({id: current_cat, type:"category"})
             }
             data.links.push({source:category_dict[label_to_category[d]], target: d + "2", value:1} )
@@ -202,13 +119,13 @@ function build_graph(photo1, photo2){
 
 
     }
+    console.log(data)
     build_from_data(data)
 }
 
 
 
 function build_from_data(data){
-    console.log(data)
 
     let diagram_width = parseInt(d3.select("#chart svg").style('width').replace("px", ""))
     let sankey = d3.sankey().size([diagram_width, 490])
@@ -255,7 +172,7 @@ function build_from_data(data){
         return d.width - 10})
         .attr("stroke-opacity", 0.4)
         .on("mouseover", function() {
-                d3.select(this).style("stroke-opacity", "0.7")
+                d3.select(this).style("stroke-opacity", "0.9")
                 })
         .on("mouseout", function() {
                 d3.select(this).style("stroke-opacity", "0.4")
@@ -275,7 +192,14 @@ function build_from_data(data){
         .style("stroke", function(d){
             return d3.rgb(d.color).darker(2)
         })
-        .attr("opacity", 0.8);
+        .attr("opacity", 0.8)
+        .call(d3.drag().subject(function(d){ console.log("ik wil bewegen"); return d})
+        .on('start', function(){
+             console.log("werkt dit?")
+            this.parentNode.appendChild(this)})
+        .on('drag', dragmove)
+        );
+
 
 
         links.style('stroke', (d, i) => {
@@ -315,8 +239,38 @@ function build_from_data(data){
         .attr("x", d => d.x0 < 500 / 2 ? d.x1 + 6 : d.x0 - 6)
         .attr("y", d => (d.y1 + d.y0) / 2)
         .attr("dy", "0.35em")
-        // .attr("text-anchor", d => d.x0 < 500 / 2 ? "start" : "end")
+        .attr("text-anchor", d => d.x0 < 500 / 2 ? "start" : "end")
         .text(d => clean_text(d.id));
 
+        function dragmove(d){
+            console.log("mag ik bewegen?")
+            var rectY = this.getAttribute('y');
+            var rectX = this.getAttribute('x');
 
+              d.y0 = d.y0 + d3.event.dy;
+              d.y1 = d.y1 + d3.event.dy;
+
+              d.x0 = d.x0 + d3.event.dx;
+              d.x1 = d.x1 + d3.event.dx;
+
+              var yTranslate = d.y0 - rectY;
+              var xTranslate = d.x0 - rectX;
+
+              d3.select(this).attr("transform",
+                        "translate(" + (xTranslate) + "," + (yTranslate) + ")");
+
+              sankey.update(graph);
+              links.attr("d",d3.sankeyLinkHorizontal());
+              text.remove()
+              text = graph_svg.append("g")
+                  .style("font", "10px sans-serif")
+                  .selectAll("text")
+                  .data(graph.nodes)
+                  .join("text")
+                  .attr("x", d => d.x0 < 500 / 2 ? d.x1 + 6 : d.x0 - 6)
+                  .attr("y", d => (d.y1 + d.y0) / 2)
+                  .attr("dy", "0.35em")
+                  .attr("text-anchor", d => d.x0 < 500 / 2 ? "start" : "end")
+                  .text(d => clean_text(d.id));
+        }
 }
