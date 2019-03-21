@@ -1,205 +1,534 @@
-//  ------------------ SECOND GRAPH --------------------------------------------
+let graph_svg = d3.select("#chart").append('svg')
+.attr('width', "100%")
+.attr('height', 500)
+.append("g")
 
-var units = "widget";
-var margin = {top: 5, right: 5, bottom: 5, left: 5},
-    width_graph = 700 - margin.left - margin.right,
-    height_graph = 300 - margin.top - margin.bottom;
+d3.select("#photo1").style('height', d3.select('#sankeydiagram').style('height'));
 
-    // format variables
-var formatNumber = d3.format(",.0f"),    // zero decimal places
-    format = function(d) { return formatNumber(d) + " " + units; },
-    color = d3.scaleOrdinal(d3.schemeCategory10);
+d3.select("#photo2").style('height', d3.select('#sankeydiagram').style('height'));
 
+let category_dict = ["Animal", "Sports", "Nature", "Cultural", "Object", "Landscape", "Urban", "Vehicle", "Emotions", "People", "Sky", "Architecture", "Weather/Seasons"];
+let label_to_category;
+$.getJSON('./label_to_category.json', function(data) {
+    label_to_category = data;
+});
 
-var diagram = d3.select("#chart").append("svg")
-        .attr("width", width_graph + margin.left + margin.right)
-        .attr("height", height_graph + margin.top + margin.bottom)
-    .append("g")
-        .attr("transform",
-            "translate(" + margin.left + "," + margin.top + ")");
-
-var sankey = d3.sankey()
-    .nodeWidth(30)
-    .nodePadding(30)
-    .size([width_graph, height_graph]);
-
-var path_graph = sankey.link();
-
-
-
-
-
-//  function to make the right format
-function make_json(labels1, labels2){
-
-
-
-
-    var nodes = [{node: 0, name:"photo 1"}, {node:1 , name:"photo 2"}];
-    var links = [];
-    var index = 2;
-    console.log("label1")
-    console.log(labels1)
-    console.log("labels2")
-    console.log(labels2)
-    labels1 = JSON.parse(labels1)
-    labels2 = JSON.parse(labels2)
-    if (labels1.length < 2){
-        console.log("hij was te klein");
-        labels1 = [100];
+function clean_text(txt){
+    if(txt.substring(txt.length - 1)=='1' || txt.substring(txt.length - 1)=='2'){
+        txt = txt.substring(0, txt.length - 1);
     }
-    if (labels2.length < 2){
-        console.log("ook te klein");
-        labels2 = [100];
+    txt = txt.split('_');
+    for(var i = 0; i<txt.length; i++){
+        txt[i] = txt[i].charAt(0).toUpperCase() + txt[i].substring(1);
     }
-    for (i = 0; i < labels1.length; i++){
-        let item = labels1[i];
-        item = item.toString()
-        nodes.push({"node": index, "name" :item});
-        links.push({"source": 0 ,"target": index, "value": 5 });
-        index+= 1
+    txt = txt.join(' ');
+    return txt;
+}
+
+function build_graph_cat(photo1, photo2){
+    var x = document.getElementById("change");
+    console.log(x)
+    if (x.style.display === "none") {
+        x.style.display = "block";
+        document.getElementById('text-change').innerHTML = cat_sent;
+        document.getElementById('change').innerHTML = button_title_lab;
+
     }
-    for (i = 0; i < labels2.length; i++){
-        console.log("labels2:")
-        let item = labels2[i];
-        if (labels1.indexOf(item) == -1){
-            item = item.toString()
-            nodes.push({"node": index, "name" :item});
-            links.push({"source": 1 ,"target": index, "value": 2 });
-            index+=1
-        }else {
-            links.push({"source": 1 ,"target": labels1.indexOf(item) + 2 , "value": 2 })
+
+
+
+    let data = {
+        nodes: [{id: "Photo1", type: "photo1"}],
+        links: []
+    }
+
+
+    // when one foto is selected
+    let categories1 = JSON.parse(photo1.dataset.categories);
+    let labels1 = JSON.parse(photo1.dataset.labels);
+    let label_indices = labels1.map(d => label_to_category[d]);
+    let labels_per_category = [];
+    let category = []
+
+    for(var i = 0; i< categories1.length; i++){
+        var category_index = categories1[i];
+        var numOccurences = $.grep(label_indices, function (elem) {
+            return elem === category_index;
+        }).length;
+        labels_per_category.push(numOccurences);
+    }
+
+    // check whether there is a label
+    if (labels1.length == 0){
+        data.nodes.push({id:"No Label1", type:"label1"});
+        data.links.push({source: "Photo1", target: "No Label1", value: 1})
+    }
+
+    // for every label make connection to photo:
+    labels1.forEach(function(d){
+        data.nodes.push({id: d + "1", type: "label1"});
+        data.links.push({source: "Photo1", target: d+"1", value: 1});
+
+        // make link to categorie for every label
+        data.links.push({source:d + "1", target:category_dict[label_to_category[d]], value:1 })
+        if (category.indexOf(category_dict[label_to_category[d]])== -1){
+            category.push(category_dict[label_to_category[d]])
         }
+    });
+
+    if(category.length == 0){
+        data.nodes.push({id: "No Category", type: "category"});
+        data.links.push({source:"No Label1" , target: "No Category", value: 1});
+    }else{
+        category.forEach(function(d){
+            data.nodes.push({id:d, type:'category'})
+        });
+    };
+
+    if (photo2){
+        data.nodes.push({id: "Photo2", type:"photo2"})
+
+
+        let categories2 = JSON.parse(photo2.dataset.categories);
+        let labels2 = JSON.parse(photo2.dataset.labels);
+        let label_indices2 = labels2.map(d => label_to_category[d]);
+        let labels_per_category2 = [];
+
+        for(var i = 0; i< categories2.length; i++){
+            var category_index2 = categories2[i];
+            var numOccurences2 = $.grep(label_indices2, function (elem) {
+                return elem === category_index2;
+            }).length;
+            labels_per_category2.push(numOccurences2);
+        }
+
+        if (labels2.length == 0){
+            data.nodes.push({id:"No Label2", type:"label2"});
+            data.links.push({source: "No Label2", target: "Photo2", value: 1})
+
+            if (labels1.length > 0){
+                data.nodes.push({id: "No Category", type: "category"});
+                data.links.push({source:"No Category" , target: "No Label2", value: 1});
+            }else{
+                data.links.push({source: "No Category", target:"No Label2" , value: 1});
+            }
+        }
+
+        labels2.forEach(function(d){
+            data.nodes.push({id: d+"2", type: "label2"} )
+            data.links.push({source: d+"2", target:"Photo2", value:1})
+
+            // make link to categorie for every label
+            let current_cat = category_dict[label_to_category[d]]
+            if (category.indexOf(current_cat) == -1){
+                data.nodes.push({id: current_cat, type:"category"})
+            }
+            data.links.push({source:category_dict[label_to_category[d]], target: d + "2", value:1} )
+            category.push(category_dict[label_to_category[d]])
+        });
+
+
+
     }
-    var dictstring = {nodes,links};
-    return(dictstring)
+    build_from_data_cat(data)
 }
 
 
+function build_graph_lab(photo1, photo2){
+    var x = document.getElementById("change");
+    console.log(x)
+    if (x.style.display === "none") {
+        x.style.display = "block";
+        document.getElementById('text-change').innerHTML = cat_sent;
+        document.getElementById('change').innerHTML = button_title_lab;
 
-//  function that makes the graph
-function make_graph(lab1, lab2){
+    }
 
-    let graph = make_json(lab1, lab2)
+    let data = {
+        nodes: [{id: "Photo1", type: "photo1"}],
+        links: []
+    }
 
-    sankey
-       .nodes(graph.nodes)
-       .links(graph.links)
-       .layout(30);
+    let categories1 = JSON.parse(photo1.dataset.categories);
+    let labels1 = JSON.parse(photo1.dataset.labels);
+    let label_indices = labels1.map(d => label_to_category[d]);
+    let labels_list = [];
+    let labels_per_category = [];
 
-       // add in the links
-         var link = diagram.append("g").selectAll(".link")
-             .data(graph.links)
-           .enter().append("path")
-             .attr("class", "link")
-             .attr("d", path_graph)
-             .style("stroke-width", function(d) { return Math.max(0.5, d.dy); })
-             .sort(function(a, b) { return b.dy - a.dy; });
+    for(var i = 0; i< categories1.length; i++){
+        var category_index = categories1[i];
+        var numOccurences = $.grep(label_indices, function (elem) {
+            return elem === category_index;
+        }).length;
+        labels_per_category.push(numOccurences);
+    }
 
-       // add the link titles
-         link.append("title")
-               .text(function(d) {
-           		return d.source.name + " → " +
-                       d.target.name + "\n" + format(d.value); });
+    if(categories1.length == 0){
+        data.nodes.push({id: "No Category1", type: "category1"});
+        data.links.push({source: "Photo1", target: "No Category1", value: 1});
+    }
 
+    categories1.forEach(function(d, i){
+        data.nodes.push({id: category_dict[d]+"1", type: "category1"});
+        data.links.push({source: "Photo1", target: category_dict[d]+"1", value: labels_per_category[i]});
+    });
 
-  var node = diagram.append("g").selectAll(".node")
-        .data(graph.nodes)
-    .enter().append('g')
-        .attr("class", "node")
-        .attr("transform", function(d) {
-            return "translate(" + d.x + "," + d.y + ")"; })
-        .call(d3.drag()
-          .subject(function(d) {
-            return d;
-          })
-          .on("start", function() {
-            this.parentNode.appendChild(this);
-          })
-          .on("drag", dragmove));
+    if(labels1.length == 0){
+        data.nodes.push({id: "No Label", type: "label"});
+        data.links.push({source: "No Category1", target: "No Label", value: 1})
+    }
 
+    labels1.forEach(function(d){
+        data.nodes.push({id: d, type: "label"});
+        data.links.push({source: category_dict[label_to_category[d]]+"1", target: d, value: 1});
 
-  node.append("rect")
-      .attr("height", function(d) {  return d.dy; })
-      .attr("width", sankey.nodeWidth())
-      .style("fill", function(d){
-          console.log(d)
-          console.log(d.name)
-          return d.color = color(d.name.replace(/ .*/, "")); })
-      .style("stroke", function(d) {
-          return d3.rgb(d.color).darker(2); })
-    .append("title")
-      .text(function(d) {
-            return d.name + "\n" + format(d.value); });
+        if (labels_list.indexOf(d) == -1){
+            labels_list.push(d);
+        };
+    });
 
-        // add in the title for the nodes
-    node.append("text")
-           .attr("x", -6)
-           .attr("y", function(d) { return d.dy / 2; })
-           .attr("dy", ".35em")
-           .attr("text-anchor", "end")
-           .attr("transform", null)
-           .text(function(d) { return d.name; })
-         .filter(function(d) { return d.x < width_graph / 2; })
-           .attr("x", 6 + sankey.nodeWidth())
-           .attr("text-anchor", "start");
+    if(photo2){
+        data.nodes.push({id: "Photo2", type:"photo2"});
 
-    function dragmove(d) {
-           d3.select(this)
-             .attr("transform",
-                   "translate("
-                      + d.x + ","
-                      + (d.y = Math.max(
-                         0, Math.min(height_graph - d.dy, d3.event.y))
-                        ) + ")");
-           sankey.relayout();
-           link.attr("d", path_graph);
-         }
-};
+        let categories2 = JSON.parse(photo2.dataset.categories);
+        let labels2 = JSON.parse(photo2.dataset.labels);
+        let label_indices2 = labels2.map(d => label_to_category[d]);
 
+        let labels_per_category2 = [];
 
+        for(var i = 0; i< categories2.length; i++){
+            var category_index2 = categories2[i];
+            var numOccurences2 = $.grep(label_indices2, function (elem) {
+                return elem === category_index2;
+            }).length;
+            labels_per_category2.push(numOccurences2);
+        }
 
+        if(labels2.length == 0 && labels1.length>0){
+            data.nodes.push({id: "No Label", type: "label"});
+        }
+        if(labels2.length == 0){
+            data.links.push({source: "No Label", target: "No Category2", value: 1})
+        }
 
-function update_graph(new_labels, new_labels2){
-    alert("ARE YOU SURE?")
-
-    // makes the new data format
-    new_json = make_json(new_labels, new_labels2);
-
-    // this function we need to update the graph for taking in new data
-    sankey
-        .nodes(new_json.nodes)
-        .links(new_json.links)
-        .layout(32);
-
-    sankey.relayout();
-
-    diagram.selectAll(".link")
-        .data(new_json.links)
-        .transition()
-        .duration(1300)
-        .attr("d", path_graph)
-        .style("stroke-width", function(d) { return Math.max(0.5, d.dy); })
-
-    diagram.selectAll(".node")
-        .data(new_json.nodes, function(d) { return d.name; })
-        .transition()
-        .duration(1300)
-        .attr("transform", function(d) {
-            return "translate(" + d.x + "," + d.y + ")";
-         });
-
-    diagram.selectAll(".node rect")
-         .transition()
-         .duration(1300)
-         .attr("height", function(d) {
-            return d.dy;
-         });
-
-    diagram.selectAll(".node text")
-         .transition()
-         .duration(1300)
-         .attr("y", function(d) {
-            return d.dy / 2;
+        labels2.forEach(function(d){
+            if (labels_list.indexOf(d) == -1){
+                labels_list.push(d);
+                data.nodes.push({id: d, type: "label"});
+            };
+            data.links.push({source: d, target: category_dict[label_to_category[d]]+"2", value: 1});
         });
+
+        if(categories2.length == 0){
+            data.nodes.push({id: "No Category2", type: "category2"})
+            data.links.push({source: "No Category2", target: "Photo2", value: 1});
+        }
+
+        categories2.forEach(function(d, i){
+            data.nodes.push({id: category_dict[d]+"2", type: "category2"})
+            data.links.push({source: category_dict[d]+"2", target: "Photo2", value: labels_per_category2[i]});
+        });
+    }
+    build_from_data_lab(data);
+}
+
+
+function build_from_data_cat(data){
+
+
+    let diagram_width = parseInt(d3.select("#chart svg").style('width').replace("px", ""))
+    let sankey = d3.sankey().size([diagram_width, 490])
+    .nodeId(d => d.id)
+    .nodeWidth(20)
+    .nodePadding(10)
+    .nodeAlign(d3.sankeyCenter);
+
+    let graph = sankey(data);
+
+    graph.nodes.forEach(function(d){
+        if(d.type == "label1"){
+            d.x0 = diagram_width*0.25;
+            d.x1 = diagram_width*0.25 + 20;
+
+        }
+        if(d.type == "label2"){
+            d.x0 = diagram_width*0.75;
+            d.x1= diagram_width*0.75 + 20;
+        }
+        if(d.type == "category"){
+            d.x0 = diagram_width*0.5;
+            d.x1 = diagram_width*0.5 + 20;
+        }
+        // if(d.type == "photo1" || d.type=="photo2"){
+        //     d.y0 = 0;
+        //     d.y1 = 500;
+        // }
+    });
+
+    graph_svg.selectAll('*').remove();
+
+    let defs = graph_svg.append('defs')
+
+    let links = graph_svg.append("g")
+        .selectAll("path")
+        .data(graph.links)
+        .enter()
+        .append("path")
+        .attr("d", d3.sankeyLinkHorizontal())
+        .attr("fill", "none")
+        .attr("stroke", "#606060")
+        .attr("stroke-width", function(d) {
+        return d.width - 10})
+        .attr("stroke-opacity", 0.4)
+        .on("mouseover", function() {
+                d3.select(this).style("stroke-opacity", "0.7")
+                })
+        .on("mouseout", function() {
+                d3.select(this).style("stroke-opacity", "0.4")
+        });
+
+
+    let nodes = graph_svg.append("g")
+        .selectAll("rect")
+        .data(graph.nodes)
+        .enter()
+        .append("rect")
+        .attr("x", d => d.x0)
+        .attr("y", d => d.y0)
+        .attr("width", d => d.x1 - d.x0)
+        .attr("height", d => d.y1 - d.y0)
+        .attr("fill", d => d.color = color(clean_text(d.id)))
+        .style("stroke", function(d){
+            return d3.rgb(d.color).darker(2)
+        })
+        .attr("opacity", 0.8)
+        .call(d3.drag().subject(function(d){return d})
+        .on('start', function(){
+            this.parentNode.appendChild(this)})
+        .on('drag', dragmove)
+        );
+
+
+
+        links.style('stroke', (d, i) => {
+           const gradientID = i;
+           const startColor = d.source.color
+           const stopColor = d.target.color
+           const linearGradient = defs.append('linearGradient')
+               .attr('id', gradientID)
+               .attr("gradientUnits", "userSpaceOnUse");
+
+           linearGradient.selectAll('stop')
+             .data([
+                 {offset: '0%', color: startColor },
+                 {offset: '100%', color:stopColor}
+                 // {offset: '50%', color: stopColor },
+                 // {offset: '20%', color: startColor },
+                 // {offset: '50%', color: stopColor },
+                 // {offset: '30%', color: startColor },
+                 // {offset: '90%', color: stopColor }
+               ])
+             .enter().append('stop')
+             .attr('offset', d => {
+               return d.offset;
+             })
+             .attr('stop-color', d => {
+               return d.color;
+             });
+           return `url(#${gradientID})`;
+         })
+
+
+    let text = graph_svg.append("g")
+        .style("font", "11px sans-serif")
+        .selectAll("text")
+        .data(graph.nodes)
+        .join("text")
+        .attr("x", d => d.x0 < 500 / 2 ? d.x1 + 6 : d.x0 - 6)
+        .attr("y", d => (d.y1 + d.y0) / 2)
+        .attr("dy", "0.35em")
+        .attr("text-anchor", d => d.x0 < 500 / 2 ? "start" : "end")
+        .text(d => clean_text(d.id));
+
+        function dragmove(d){
+            var rectY = this.getAttribute('y');
+            var rectX = this.getAttribute('x');
+
+              d.y0 = d.y0 + d3.event.dy;
+              d.y1 = d.y1 + d3.event.dy;
+
+              d.x0 = d.x0 + d3.event.dx;
+              d.x1 = d.x1 + d3.event.dx;
+
+              var yTranslate = d.y0 - rectY;
+              var xTranslate = d.x0 - rectX;
+
+              d3.select(this).attr("transform",
+                        "translate(" + (xTranslate) + "," + (yTranslate) + ")");
+
+              sankey.update(graph);
+              links.attr("d",d3.sankeyLinkHorizontal());
+              text.remove()
+              text = graph_svg.append("g")
+                  .style("font", "11px sans-serif")
+                  .selectAll("text")
+                  .data(graph.nodes)
+                  .join("text")
+                  .attr("x", d => d.x0 < 500 / 2 ? d.x1 + 6 : d.x0 - 6)
+                  .attr("y", d => (d.y1 + d.y0) / 2)
+                  .attr("dy", "0.35em")
+                  .attr("text-anchor", d => d.x0 < 500 / 2 ? "start" : "end")
+                  .text(d => clean_text(d.id));
+        }
+}
+
+function build_from_data_lab(data){
+
+
+    let diagram_width = parseInt(d3.select("#chart svg").style('width').replace("px", ""))
+    let sankey = d3.sankey().size([diagram_width, 490])
+    .nodeId(d => d.id)
+    .nodeWidth(20)
+    .nodePadding(10)
+    .nodeAlign(d3.sankeyCenter);
+
+    let graph = sankey(data);
+
+
+
+    graph.nodes.forEach(function(d){
+        if(d.type == "category1"){
+            d.x0 = diagram_width*0.25;
+            d.x1 = diagram_width*0.25 + 20;
+
+        }
+        if(d.type == "category2"){
+            d.x0 = diagram_width*0.75;
+            d.x1= diagram_width*0.75 + 20;
+        }
+        if(d.type == "label"){
+            d.x0 = diagram_width*0.5;
+            d.x1 = diagram_width*0.5 + 20;
+        }
+        // if(d.type == "photo1" || d.type=="photo2"){
+        //     d.y0 = 0;
+        //     d.y1 = 500;
+        // }
+    });
+
+    graph_svg.selectAll('*').remove();
+
+    let defs = graph_svg.append('defs')
+
+    let links = graph_svg.append("g")
+        .selectAll("path")
+        .data(graph.links)
+        .enter()
+        .append("path")
+        .attr("d", d3.sankeyLinkHorizontal())
+        .attr("fill", "none")
+        .attr("stroke", "#606060")
+        .attr("stroke-width", function(d) {
+        return d.width - 10})
+        .attr("stroke-opacity", 0.4)
+        .on("mouseover", function() {
+                d3.select(this).style("stroke-opacity", "0.7")
+                })
+        .on("mouseout", function() {
+                d3.select(this).style("stroke-opacity", "0.4")
+        });
+
+
+    let nodes = graph_svg.append("g")
+        .selectAll("rect")
+        .data(graph.nodes)
+        .enter()
+        .append("rect")
+        .attr("x", d => d.x0)
+        .attr("y", d => d.y0)
+        .attr("width", d => d.x1 - d.x0)
+        .attr("height", d => d.y1 - d.y0)
+        .attr("fill", d => d.color = color(clean_text(d.id)))
+        .style("stroke", function(d){
+            return d3.rgb(d.color).darker(2)
+        })
+        .attr("opacity", 0.8)
+        .call(d3.drag().subject(function(d){return d})
+        .on('start', function(){
+            this.parentNode.appendChild(this)})
+        .on('drag', dragmove)
+        );
+
+
+
+        links.style('stroke', (d, i) => {
+           const gradientID = i;
+           const startColor = d.source.color
+           const stopColor = d.target.color
+           const linearGradient = defs.append('linearGradient')
+               .attr('id', gradientID)
+               .attr("gradientUnits", "userSpaceOnUse");
+
+           linearGradient.selectAll('stop')
+             .data([
+                 {offset: '0%', color: startColor },
+                 {offset: '100%', color:stopColor}
+                 // {offset: '50%', color: stopColor },
+                 // {offset: '20%', color: startColor },
+                 // {offset: '50%', color: stopColor },
+                 // {offset: '30%', color: startColor },
+                 // {offset: '90%', color: stopColor }
+               ])
+             .enter().append('stop')
+             .attr('offset', d => {
+               return d.offset;
+             })
+             .attr('stop-color', d => {
+               return d.color;
+             });
+           return `url(#${gradientID})`;
+         })
+
+
+    let text = graph_svg.append("g")
+        .style("font", "10px sans-serif")
+        .selectAll("text")
+        .data(graph.nodes)
+        .join("text")
+        .attr("x", d => d.x0 < 500 / 2 ? d.x1 + 6 : d.x0 - 6)
+        .attr("y", d => (d.y1 + d.y0) / 2)
+        .attr("dy", "0.35em")
+        .attr("text-anchor", d => d.x0 < 500 / 2 ? "start" : "end")
+        .text(d => clean_text(d.id));
+
+        function dragmove(d){
+            var rectY = this.getAttribute('y');
+            var rectX = this.getAttribute('x');
+
+              d.y0 = d.y0 + d3.event.dy;
+              d.y1 = d.y1 + d3.event.dy;
+
+              d.x0 = d.x0 + d3.event.dx;
+              d.x1 = d.x1 + d3.event.dx;
+
+              var yTranslate = d.y0 - rectY;
+              var xTranslate = d.x0 - rectX;
+
+              d3.select(this).attr("transform",
+                        "translate(" + (xTranslate) + "," + (yTranslate) + ")");
+
+              sankey.update(graph);
+              links.attr("d",d3.sankeyLinkHorizontal());
+              text.remove()
+              text = graph_svg.append("g")
+                  .style("font", "10px sans-serif")
+                  .selectAll("text")
+                  .data(graph.nodes)
+                  .join("text")
+                  .attr("x", d => d.x0 < 500 / 2 ? d.x1 + 6 : d.x0 - 6)
+                  .attr("y", d => (d.y1 + d.y0) / 2)
+                  .attr("dy", "0.35em")
+                  .attr("text-anchor", d => d.x0 < 500 / 2 ? "start" : "end")
+                  .text(d => clean_text(d.id));
+        }
 }
