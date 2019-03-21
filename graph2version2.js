@@ -30,7 +30,9 @@ function build_graph_cat(photo1, photo2){
     console.log(x)
     if (x.style.display === "none") {
         x.style.display = "block";
-        document.getElementById('text-change').innerHTML = "Similarities between categories";
+        document.getElementById('text-change').innerHTML = cat_sent;
+        document.getElementById('change').innerHTML = button_title_lab;
+
     }
 
 
@@ -137,7 +139,8 @@ function build_graph_lab(photo1, photo2){
     console.log(x)
     if (x.style.display === "none") {
         x.style.display = "block";
-        document.getElementById('text-change').innerHTML = "Show similarities between categories";
+        document.getElementById('text-change').innerHTML = cat_sent;
+        document.getElementById('change').innerHTML = button_title_lab;
 
     }
 
