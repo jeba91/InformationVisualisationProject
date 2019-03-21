@@ -3,6 +3,13 @@ let graph_svg = d3.select("#chart").append('svg')
 .attr('height', 500)
 .append("g")
 
+// let cat_sent = "Connected categories between photo's"
+// let lab_sent = "Connected labels between photo's"
+//
+// let button_title_cat = "Show categories"
+// let button_title_lab = "Show labels"
+
+
 let category_dict = ["Animal", "Sports", "Nature", "Cultural", "Object", "Landscape", "Urban", "Vehicle", "Emotions", "People", "Sky", "Architecture", "Weather/Seasons"];
 let label_to_category;
 $.getJSON('./label_to_category.json', function(data) {
@@ -27,7 +34,9 @@ function build_graph_cat(photo1, photo2){
     console.log(x)
     if (x.style.display === "none") {
         x.style.display = "block";
-        document.getElementById('text-change').innerHTML = "Similarities between categories";
+        document.getElementById('text-change').innerHTML = cat_sent;
+        document.getElementById('change').innerHTML = button_title_lab;
+
     }
 
 
@@ -134,7 +143,8 @@ function build_graph_lab(photo1, photo2){
     console.log(x)
     if (x.style.display === "none") {
         x.style.display = "block";
-        document.getElementById('text-change').innerHTML = "Show similarities between categories";
+        document.getElementById('text-change').innerHTML = cat_sent;
+        document.getElementById('change').innerHTML = button_title_lab;
 
     }
 

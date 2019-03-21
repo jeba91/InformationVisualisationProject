@@ -37,6 +37,12 @@ let lab2 = "[]";
 let graph1;
 let graph2;
 
+let cat_sent = "Connected categories between photo's"
+let lab_sent = "Connected labels between photo's"
+
+let button_title_cat = "Show categories"
+let button_title_lab = "Show labels"
+
 let sankey_function = "build_graph_cat";
 
 let radius = 0;
@@ -44,10 +50,12 @@ let radius = 0;
 $("#change").hide()
 
 function changegraph(){
-    if ( document.getElementById('text-change').innerHTML == "Similarities between categories"){
-        document.getElementById('text-change').innerHTML = "Similarities between labels";
+    if ( document.getElementById('text-change').innerHTML == cat_sent){
+        document.getElementById('text-change').innerHTML = lab_sent;
+        document.getElementById('change').innerHTML = button_title_cat;
     }else{
-        document.getElementById('text-change').innerHTML = "Similarities between categories";
+        document.getElementById('text-change').innerHTML = cat_sent;    
+        document.getElementById('change').innerHTML = button_title_lab;
     };
 
     if(sankey_function == "build_graph_cat"){
