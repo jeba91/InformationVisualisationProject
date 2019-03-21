@@ -77,6 +77,7 @@ d3.json("./labels.json").then(function(data) {
     .on("click", clicked);
 
     function clickOuter(p){
+        console.log("hello")
         d3.selectAll(".outerLabels").attr('stroke', 'none')
         d3.select(this).attr('stroke', 'black')
         filtersunburstlabels(p.data.name, p);

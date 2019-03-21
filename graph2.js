@@ -100,7 +100,7 @@ function build_graph(photo1, photo2){
             data.links.push({source: category_dict[d]+"2", target: "Photo2", value: labels_per_category2[i]});
         });
     }
-    console.log(data.links)
+    console.log(data)
 
     build_from_data(data);
 }
@@ -118,8 +118,6 @@ function build_from_data(data){
     .nodeAlign(d3.sankeyCenter);
 
     let graph = sankey(data);
-
-
 
     graph.nodes.forEach(function(d){
         if(d.type == "category1"){
@@ -225,35 +223,35 @@ function build_from_data(data){
         .attr("text-anchor", d => d.x0 < 500 / 2 ? "start" : "end")
         .text(d => clean_text(d.id));
 
-        function dragmove(d){
-            var rectY = this.getAttribute('y');
-            var rectX = this.getAttribute('x');
+function dragmove(d){
+    var rectY = this.getAttribute('y');
+    var rectX = this.getAttribute('x');
 
-              d.y0 = d.y0 + d3.event.dy;
-              d.y1 = d.y1 + d3.event.dy;
+      d.y0 = d.y0 + d3.event.dy;
+      d.y1 = d.y1 + d3.event.dy;
 
-              d.x0 = d.x0 + d3.event.dx;
-              d.x1 = d.x1 + d3.event.dx;
+      d.x0 = d.x0 + d3.event.dx;
+      d.x1 = d.x1 + d3.event.dx;
 
-              var yTranslate = d.y0 - rectY;
-              var xTranslate = d.x0 - rectX;
+      var yTranslate = d.y0 - rectY;
+      var xTranslate = d.x0 - rectX;
 
-              d3.select(this).attr("transform",
-                        "translate(" + (xTranslate) + "," + (yTranslate) + ")");
+      d3.select(this).attr("transform",
+                "translate(" + (xTranslate) + "," + (yTranslate) + ")");
 
-              sankey.update(graph);
-              links.attr("d",d3.sankeyLinkHorizontal());
-              text.remove()
-              text = graph_svg.append("g")
-                  .style("font", "10px sans-serif")
-                  .selectAll("text")
-                  .data(graph.nodes)
-                  .join("text")
-                  .attr("x", d => d.x0 < 500 / 2 ? d.x1 + 6 : d.x0 - 6)
-                  .attr("y", d => (d.y1 + d.y0) / 2)
-                  .attr("dy", "0.35em")
-                  .attr("text-anchor", d => d.x0 < 500 / 2 ? "start" : "end")
-                  .text(d => clean_text(d.id));
-        }
+      sankey.update(graph);
+      links.attr("d",d3.sankeyLinkHorizontal());
+      text.remove()
+      text = graph_svg.append("g")
+          .style("font", "10px sans-serif")
+          .selectAll("text")
+          .data(graph.nodes)
+          .join("text")
+          .attr("x", d => d.x0 < 500 / 2 ? d.x1 + 6 : d.x0 - 6)
+          .attr("y", d => (d.y1 + d.y0) / 2)
+          .attr("dy", "0.35em")
+          .attr("text-anchor", d => d.x0 < 500 / 2 ? "start" : "end")
+          .text(d => clean_text(d.id));
+}
 
 }
