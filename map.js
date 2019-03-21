@@ -26,6 +26,8 @@ let top3region2 = [];
 
 let views1 = 0;
 let views2 = 0;
+let views31 = [];
+let views32 = [];
 
 
 let labels_select = false;
@@ -251,8 +253,8 @@ let previous_k = 1.0;
 
 // Method for mouseover
 function mouseoverCenter(d){
-    let views = d[2].map(function(d){return d[3]});
-    let max_views_index = top_n_indices(views, 3);
+    let views_all = d[2].map(function(d){return d[3]});
+    let max_views_index = top_n_indices(views_all, 3);
     let url_most_views = d[2][max_views_index[0]][2];
     let circle_most_views = d[2][max_views_index[0]][4];
 
@@ -272,6 +274,7 @@ function mouseoverCenter(d){
             image1.append("text").html("<b>Title: </b>" + title).style("display", "block");
             image1.append("text").html("<b>Description: </b>" + description).style("display", "block");
             image1.append("text").html("<b>Views: </b>" + views).style("display", "block");
+            image1.append("text").html("<b>Views Top 3</b><ol><li>" + views_all[max_views_index[0]] + "</li><li>" + views_all[max_views_index[1]] + "</li><li>" + views_all[max_views_index[2]] + "</li></ol>").style("display", "block");
         }
 
         else if(selectsecond){
@@ -280,6 +283,7 @@ function mouseoverCenter(d){
             image2.append("text").html("<b>Title: </b>" + title).style("display", "block");
             image2.append("text").html("<b>Description: </b>" + description).style("display", "block");
             image2.append("text").html("<b>Views: </b>" + views).style("display", "block");
+            image2.append("text").html("<b>Views Top 3</b><ol><li>" + views_all[max_views_index[0]] + "</li><li>" + views_all[max_views_index[1]] + "</li><li>" + views_all[max_views_index[2]] + "</li></ol>").style("display", "block");
         }
 
     }else if(inCenterpoint & !outCenterpoint){
@@ -299,9 +303,11 @@ function mouseoverCenter(d){
             title1 = d3.select(circle_most_views).attr("data-title");
             description1 = d3.select(circle_most_views).attr("data-description");
             views1 = d3.select(circle_most_views).attr("data-views");
+            views31 = [views_all[max_views_index[0]], views_all[max_views_index[1]], views_all[max_views_index[2]]];
             image1.append("text").html("<b>Title: </b>" + title1).style("display", "block");
             image1.append("text").html("<b>Description: </b>" + description1).style("display", "block");
             image1.append("text").html("<b>Views: </b>" + views1).style("display", "block");
+            image1.append("text").html("<b>Views Top 3</b><ol><li>" + views_all[max_views_index[0]] + "</li><li>" + views_all[max_views_index[1]] + "</li><li>" + views_all[max_views_index[2]] + "</li></ol>").style("display", "block");
             lab1 = circle_most_views.dataset.labels;
             graph1 = circle_most_views;
         }else if(!selectfirst & selectsecond & d3.select(circle_most_views).attr('checked') == 'false'){
@@ -320,9 +326,11 @@ function mouseoverCenter(d){
             title2 = d3.select(circle_most_views).attr("data-title")
             description2 = d3.select(circle_most_views).attr("data-description");
             views2 = d3.select(circle_most_views).attr("data-views");
+            views32 = [views_all[max_views_index[0]], views_all[max_views_index[1]], views_all[max_views_index[2]]];
             image2.append("text").html("<b>Title: </b>" + title2).style("display", "block");
             image2.append("text").html("<b>Description: </b>" + description2).style("display", "block");
             image2.append("text").html("<b>Views: </b>" + views2).style("display", "block");
+            image2.append("text").html("<b>Views Top 3</b><ol><li>" + views_all[max_views_index[0]] + "</li><li>" + views_all[max_views_index[1]] + "</li><li>" + views_all[max_views_index[2]] + "</li></ol>").style("display", "block");
             lab2 = circle_most_views.dataset.labels;
             graph2 = circle_most_views;
         }
@@ -343,8 +351,8 @@ function mouseoverCenter(d){
 
 
 function mouseoutCenter(d){
-    let views = d[2].map(function(d){return d[3]});
-    let max_views_index = top_n_indices(views, 3);
+    let views_all = d[2].map(function(d){return d[3]});
+    let max_views_index = top_n_indices(views_all, 3);
     let url_most_views = d[2][max_views_index[0]][2];
     let circle_most_views = d[2][max_views_index[0]][4];
 
@@ -361,6 +369,7 @@ function mouseoutCenter(d){
         image1.append("text").html("<b>Title: </b>" + title1).style("display", "block");
         image1.append("text").html("<b>Description: </b>" + description1).style("display", "block");
         image1.append("text").html("<b>Views: </b>" + views1).style("display", "block");
+        image1.append("text").html("<b>Views Top 3</b><ol><li>" + views31[0] + "</li><li>" + views31[1] + "</li><li>" + views31[2] + "</li></ol>").style("display", "block");
     }
     else if(selectsecond){
         image2.transition().duration(200).style("opacity", .9);
@@ -368,6 +377,7 @@ function mouseoutCenter(d){
         image2.append("text").html("<b>Title: </b>" + title2).style("display", "block");
         image2.append("text").html("<b>Description: </b>" + description2).style("display", "block");
         image2.append("text").html("<b>Views: </b>" + views2).style("display", "block");
+        image2.append("text").html("<b>Views Top 3</b><ol><li>" + views32[0] + "</li><li>" + views31[1] + "</li><li>" + views31[2] + "</li></ol>").style("display", "block");
     }
 
     d3.selectAll('circle[fill=red]')
